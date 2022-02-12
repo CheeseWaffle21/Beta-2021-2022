@@ -259,7 +259,7 @@ void autonomous(void) {
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(chainencoder.position(degrees));
-    if (chainencoder.position(degrees) >= 500) {
+    if (chainencoder.position(degrees) >= -450) {
       break;
     }
     wait(.05, sec);
@@ -271,11 +271,7 @@ void autonomous(void) {
   leftback.spin(reverse);
   rightback.spin(reverse);
 
-  wait(1.25, seconds);
-  leftfront.stop();
-  rightfront.stop();
-  leftback.stop();
-  rightback.stop();
+  wait(1.5, seconds);
   rightfront.setBrake(coast);
   rightback.setBrake(coast);
   leftfront.setBrake(coast);
