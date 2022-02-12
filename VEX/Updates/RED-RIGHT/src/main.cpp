@@ -129,7 +129,7 @@ void autonomous(void) {
   // ..........................................................................
   //int backspace = 344;
   //int frontspace = 101;
-  Brain.Screen.print("this is autonomous");
+  Brain.Screen.print("this is autonomous haha");
   //front(-50, false, 1370);
   leftback.setVelocity(-100, percent);
   rightback.setVelocity(-100, percent);
@@ -176,7 +176,7 @@ void autonomous(void) {
   leftback.spin(forward);
   rightback.spin(reverse);
   while (true) {
-    colour.takeSnapshot(colour__BLUEGOAL);
+    colour.takeSnapshot(colour__REDGOAL);
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1); 
     Brain.Screen.print(colour.objectCount);    
@@ -223,7 +223,7 @@ void autonomous(void) {
     }
     wait(.05, sec);
   }
-  wait(1, seconds);
+  wait(.3, seconds);
   leftfront.stop();
   rightfront.stop();
   leftback.stop();
