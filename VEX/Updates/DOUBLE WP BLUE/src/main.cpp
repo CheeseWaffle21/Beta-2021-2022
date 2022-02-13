@@ -249,28 +249,25 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  front (false, 2, 20);
+  /*front (false, 2, 20);
   grab (true);
   wait (.5, seconds);
   grab (false);
 
-  /*front (true, 15, 80);
-  strafe (true, 30, 70);
-  front (false, 5, 70);
-  grab (true);*/
+
 
   strafe (true, 25, 90);
-  front (false, 80, 90);
+  front (false, 80, 90);*/
   //rotate (false, 30, 50);
-  leftback.setVelocity(30, percent);
-  rightback.setVelocity(30, percent);
-  rightfront.setVelocity(30, percent);
-  leftfront.setVelocity(30, percent);
+  leftback.setVelocity(50, percent);
+  rightback.setVelocity(50, percent);
+  rightfront.setVelocity(50, percent);
+  leftfront.setVelocity(50, percent);
   leftback.spin(forward);
   rightback.spin(reverse);
   leftfront.spin(forward);
   rightfront.spin(reverse);
-  //wait(1.5, seconds);
+  wait(2.5, seconds);
   while (true) {
     colour.takeSnapshot(colour__BLUEGOAL);
     Brain.Screen.clearScreen();
@@ -296,17 +293,26 @@ void autonomous(void) {
   }
   goalarm.stop();
   goalarm.setBrake(hold);
+    leftback.setVelocity(80, percent);
+  rightback.setVelocity(80, percent);
+  rightfront.setVelocity(80, percent);
+  leftfront.setVelocity(80, percent);
 leftfront.spin(forward);
   rightfront.spin(forward);
   leftback.spin(forward);
   rightback.spin(forward);
-  while (true) {
-    if (goallimit.pressing()) {
+  wait(1.5, seconds);
+  /*while (true) {
+        if (goallimit.pressing() ) {
       break; 
     }
     wait(.05, sec);
-  }
+  }*/
+  end();
+  Brain.Screen.print("hello please");
+  goalarm.setVelocity(100, percent);
   goalarm.spin(reverse);
+
   while (true) {
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);
@@ -327,7 +333,7 @@ leftfront.spin(forward);
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(chainencoder.position(degrees));
-    if (chainencoder.position(degrees) >= -450) {
+    if (chainencoder.position(degrees) >= -520) {
       break;
     }
     wait(.05, sec);
