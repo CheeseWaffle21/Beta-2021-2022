@@ -259,14 +259,12 @@ void autonomous(void) {
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(chainencoder.position(degrees));
-    if (chainencoder.position(degrees) >= 600) {
+    if (chainencoder.position(degrees) >= 500) {
       break;
     }
     wait(.05, sec);
   }
   chain.stop();
-
-  //Nathan Reese smells like grease
   
   leftfront.spin(reverse);
   rightfront.spin(reverse);

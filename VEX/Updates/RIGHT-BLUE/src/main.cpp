@@ -175,7 +175,6 @@ void autonomous(void) {
   rightfront.spin(reverse);
   leftback.spin(forward);
   rightback.spin(reverse);
-  wait(1, seconds);
   while (true) {
     colour.takeSnapshot(colour__BLUEGOAL);
     Brain.Screen.clearScreen();
@@ -260,7 +259,7 @@ void autonomous(void) {
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(chainencoder.position(degrees));
-    if (chainencoder.position(degrees) >= 600) {
+    if (chainencoder.position(degrees) >= 500) {
       break;
     }
     wait(.05, sec);
