@@ -267,9 +267,21 @@ void rotate (bool way, double number, int speed) {
   return;
 }
 
-void moveto (double x, double y, int speed) {
-  double targetangle = atan(y/x);
-  double FrBl = sin(targetangle - pi/4);
+void moveto (double x, double y, double turn) {
+  
+  double targetangle = atan2(y/x);
+  
+  double magnitude = sqrt(x*x + y*y) / 100;
+  
+  double FrBl = sin(targetangle - pi/4) * magnitude;
+  double FlBr = sin(targetangle + pi/4) * magnitude;
+  
+  
+  
+  
+  
+  
+  
 }
 
 //    fwd-back:
