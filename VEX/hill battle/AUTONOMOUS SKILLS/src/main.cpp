@@ -378,11 +378,20 @@ void autonomous(void) {
   frontarm(false);
   forwardtillbump(50);
   frontarm(true);
+  //potential for using match load rings here
   front(false, 5, 50);
   strafe(true, 5, 50);
 
 
-  rotate2(true, 90, 50);
+  rotate2(false, 90, 50);
+  
+  //inertial move till collision?
+  
+  //Transfer grab function to here
+  
+  //
+  
+  
 
 
 
