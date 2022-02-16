@@ -20,7 +20,7 @@ signature colour__BLUEGOAL = signature (1, -3441, -2785, -3113, 8975, 10355, 966
 signature colour__GREENBOX = signature (2, -5767, -4965, -5366, -3803, -2861, -3332, 2.5, 0);
 signature colour__REDGOAL = signature (3, 8099, 8893, 8496, -1505, -949, -1227, 11, 0);
 vision colour = vision (PORT18, 50, colour__BLUEGOAL, colour__GREENBOX, colour__REDGOAL);
-inertial Inertial15 = inertial(PORT15);
+inertial inertia = inertial(PORT15);
 
 
 sonar distancer = sonar(Brain.ThreeWirePort.C);

@@ -26,7 +26,7 @@ extern sonar distancer;
 extern pot potG;
 extern encoder chainencoder;
 extern limit goallimit;
-extern inertial Inertial15;
+extern inertial inertia;
 
 
 

@@ -22,6 +22,9 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+#include <cmath>
+#include "math.h"
+#define pi 3.14159265
 
 using namespace vex;
 
@@ -58,11 +61,11 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 int total;
-int fwdconversion = 28;
-int strafeconversion = 62;
-double trnconversion = 17.5;
+int fwdconversion = 28; //28 degrees travels 1 inch
+int strafeconversion = 62; //62 degrees strafes 1 inch
+double trnconversion = 17.5; //17.5 degrees turns some amount of degrees idk
 
-
+//Resets drivetrain
 void reset () {
   leftback.resetPosition();
   rightback.resetPosition();
@@ -71,6 +74,7 @@ void reset () {
   return;
 }
 
+//stops drivetrain
 void end () {
   leftback.stop();
   rightback.stop();
@@ -79,6 +83,8 @@ void end () {
   return;
 }
 
+//Takes average of all drivetrain motors' rotational values
+//Used in situations going straight foward or backward
 int fwdaverage () {
   total = ((leftback.position(degrees) + rightback.position(degrees) + rightfront.position(degrees) + leftfront.position(degrees)) / 4);
   Brain.Screen.clearScreen();
@@ -87,6 +93,7 @@ int fwdaverage () {
   return total;
 }
 
+//
 int saverage () {
   total = ((-leftback.position(degrees) + rightback.position(degrees) + -rightfront.position(degrees) + leftfront.position(degrees)) / 4);
   Brain.Screen.clearScreen();
@@ -267,9 +274,48 @@ void rotate (bool way, double number, int speed) {
   return;
 }
 
+void rotate2 (bool way, int hdegrees, int speed) {
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+  if (way == true) {
+    leftback.spin(forward);
+    rightback.spin(reverse);
+    leftfront.spin(forward);
+    rightfront.spin(reverse);
+    waitUntil(inertia.rotation(degrees) >= hdegrees);
+    end();
+  } else if (way == false) {
+    leftback.spin(reverse);
+    rightback.spin(forward);
+    leftfront.spin(reverse);
+    rightfront.spin(forward);
+    waitUntil(inertia.rotation(degrees) <= hdegrees);
+    end();
+  }
+  
+}
+
+void forwardtillbump (int speed) {
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+
+  leftback.spin(forward);
+  rightback.spin(forward);
+  leftfront.spin(forward);
+  rightfront.spin(forward);
+
+  waitUntil(goallimit.pressing());
+
+  end();
+}
+
 void moveto (double x, double y, double turn) {
   
-  double targetangle = atan2(y/x);
+  double targetangle = atan2(y,x);
   
   double magnitude = sqrt(x*x + y*y) / 100;
   
@@ -308,7 +354,7 @@ void autonomous(void) {
   */
   
 
-
+  /*
   front (true, 90, 30);
   
 
@@ -325,6 +371,18 @@ void autonomous(void) {
   front (true, 90, 30);
   strafe (false, 10, 30);
   front (false, 90, 30);
+  */
+  inertia.startCalibration();
+  wait(2, seconds);
+
+  frontarm(false);
+  forwardtillbump(50);
+  frontarm(true);
+  front(false, 5, 50);
+  strafe(true, 5, 50);
+
+
+  rotate2(true, 90, 50);
 
 
 
