@@ -274,11 +274,13 @@ void rotate (bool way, double number, int speed) {
   return;
 }
 
-void rotate2 (bool way, int hdegrees, int speed) {
+void rotate2 (bool way, int target, int speed) {
   leftback.setVelocity(speed, percent);
   rightback.setVelocity(speed, percent);
   rightfront.setVelocity(speed, percent);
   leftfront.setVelocity(speed, percent);
+  
+  int hdegrees = inertia.rotation(degrees) + target
   if (way == true) {
     leftback.spin(forward);
     rightback.spin(reverse);
@@ -383,14 +385,25 @@ void autonomous(void) {
   strafe(true, 5, 50);
 
 
-  rotate2(false, 90, 50);
+  rotate2(true, 80, 50);
   
-  //inertial move till collision?
+  //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
   
   //Transfer grab function to here
   
-  //
+  //move till collision with the platform?
+  //move forward
+  //lift the lift
+  //move backwards
+  //grab lets go of goal to balance the goal
   
+  rotate2(false, 90, 50);
+  frontarm(false);
+  
+  //move forwards till alliance goal
+  //grab the alliance goal with clamp
+  //turn clockwise to face tall yellow
+  //push tall yellow to the opposite corner
   
 
 
