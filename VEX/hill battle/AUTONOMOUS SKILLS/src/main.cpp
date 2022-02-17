@@ -83,6 +83,27 @@ void end () {
   return;
 }
 
+//grab function
+void grab (bool up) {
+  if (up == false){
+    clamp.setVelocity(100, percent);
+    clamp.rotateFor(-360, degrees, false);   
+  } else {
+    clamp.setVelocity(100, percent);
+    clamp.rotateFor(360, degrees, false);   
+  }
+}
+
+void lifty (bool up) {
+  if (up == false){
+    lift.setVelocity(100, percent);
+    lift.rotateFor(700, degrees, false);
+  } 
+  else {
+    lift.setVelocity(100, percent);
+    lift.rotateFor(-700, degrees, false);
+  }
+}
 //Takes average of all drivetrain motors' rotational values
 //Used in situations going straight foward or backward
 int fwdaverage () {
@@ -280,7 +301,7 @@ void rotate2 (bool way, int target, int speed) {
   rightfront.setVelocity(speed, percent);
   leftfront.setVelocity(speed, percent);
   
-  int hdegrees = inertia.rotation(degrees) + target
+  int hdegrees = inertia.rotation(degrees) + target;
   if (way == true) {
     leftback.spin(forward);
     rightback.spin(reverse);
@@ -385,23 +406,39 @@ void autonomous(void) {
   strafe(true, 5, 50);
 
 
-  rotate2(true, 80, 50);
+  rotate2(true, 96, 50); //96.1417757 degrees precisely
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
+  front(false, 54.2112, 50);
+  
   
   //Transfer grab function to here
+ grab(true);
   
   //move till collision with the platform?
-  //move forward
+
+  //move forward 57.378 inches
+  front(false, 57.378, 50);
+
+  /*maybe rotate perpendicularly to goal:
+  rotate2(false, -6, 50);
+  */
+
   //lift the lift
+  lifty(true);
   //move backwards
   //grab lets go of goal to balance the goal
   
+  front(true, 3, 50);
   rotate2(false, 90, 50);
   frontarm(false);
   
   //move forwards till alliance goal
+  front(false, 28, 70);
+
   //grab the alliance goal with clamp
+  grab(true);
+
   //turn clockwise to face tall yellow
   //push tall yellow to the opposite corner
   
