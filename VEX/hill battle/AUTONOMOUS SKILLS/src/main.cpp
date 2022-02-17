@@ -83,8 +83,17 @@ void end () {
   return;
 }
 
-//grab function
+void kill () {
+  leftback.stop(hold);
+  rightback.stop(hold);
+  rightfront.stop(hold);
+  leftfront.stop(hold);
+  return;
+}
+
+//grab function false is clamp down, true is let go
 void grab (bool up) {
+  clamp.resetPosition();
   if (up == false){
     clamp.setVelocity(100, percent);
     clamp.rotateFor(-360, degrees, false);   
@@ -92,16 +101,19 @@ void grab (bool up) {
     clamp.setVelocity(100, percent);
     clamp.rotateFor(360, degrees, false);   
   }
+  clamp.setBrake(hold);
 }
 
+//False is up, true is down.
 void lifty (bool up) {
+  lift.resetPosition();
   if (up == false){
     lift.setVelocity(100, percent);
-    lift.rotateFor(700, degrees, false);
+    lift.rotateFor(1200, degrees, false);
   } 
   else {
     lift.setVelocity(100, percent);
-    lift.rotateFor(-700, degrees, false);
+    lift.rotateFor(-1200, degrees, false);
   }
 }
 //Takes average of all drivetrain motors' rotational values
@@ -211,10 +223,6 @@ void strafe (bool way, double number, int speed) {
   return;
 }
 
-void grab () {
-  
-}
-
 void frontarm (bool up) {
   goalarm.setVelocity(100, percent);
   if (up == true) { 
@@ -301,15 +309,19 @@ void rotate2 (bool way, int target, int speed) {
   rightfront.setVelocity(speed, percent);
   leftfront.setVelocity(speed, percent);
   
-  int hdegrees = inertia.rotation(degrees) + target;
+  int hdegrees;
+
   if (way == true) {
+    hdegrees = inertia.rotation(degrees) + target;
     leftback.spin(forward);
     rightback.spin(reverse);
     leftfront.spin(forward);
     rightfront.spin(reverse);
     waitUntil(inertia.rotation(degrees) >= hdegrees);
     end();
+
   } else if (way == false) {
+    hdegrees = inertia.rotation(degrees) - target;
     leftback.spin(reverse);
     rightback.spin(forward);
     leftfront.spin(reverse);
@@ -318,6 +330,25 @@ void rotate2 (bool way, int target, int speed) {
     end();
   }
   
+}
+
+void rotate3 (bool way, int head, int speed){
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+  
+  
+
+  if (way==false) {
+    leftback.spin(reverse);
+    rightback.spin(forward);
+    leftfront.spin(reverse);
+    rightfront.spin(forward);
+
+     waitUntil(sin((inertia.rotation(degrees)*pi/180)) <= 0.1);
+    kill();
+  }
 }
 
 void forwardtillbump (int speed) {
@@ -395,39 +426,78 @@ void autonomous(void) {
   strafe (false, 10, 30);
   front (false, 90, 30);
   */
+
+  //Initialize inertial sensor
   inertia.startCalibration();
   wait(2, seconds);
 
+  //Grab goal in front with front arm
   frontarm(false);
   forwardtillbump(50);
   frontarm(true);
+
   //potential for using match load rings here
+
+  //Go back a bit and strafe a bit left
   front(false, 5, 50);
-  strafe(true, 5, 50);
+  strafe(false, 5, 50);
 
 
-  rotate2(true, 96, 50); //96.1417757 degrees precisely
+  rotate2(true, 85, 50); //96.1417757 degrees precisely
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
   front(false, 54.2112, 50);
   
   
   //Transfer grab function to here
- grab(true);
+  grab(false);
+
+  wait(1, seconds);
   
+  //turn towards lower platform
+  rotate2(true, 10, 50);
+
   //move till collision with the platform?
 
   //move forward 57.378 inches
-  front(false, 57.378, 50);
+  front(false, 35, 30);
 
   /*maybe rotate perpendicularly to goal:
   rotate2(false, -6, 50);
   */
 
   //lift the lift
-  lifty(true);
-  //move backwards
+  lifty(false);
+  wait(1, seconds);
+
+  //come to the platform
+  front(false, 15, 50);
+
+  //turn back
+  rotate2(false, 20, 50);
+
+  //strafe to level platform
+  //strafe(true, 5, 50);*****
+
   //grab lets go of goal to balance the goal
+  grab(true);
+
+
+  rotate3(false, 0, 40);
+
+  wait(1, seconds);
+
+  lifty(true);
+
+  front(false, 48, 50);
+
+  grab(false);
+
+  
+
+/*
+  //move backwards
+  front(true, 12, 50);
   
   front(true, 3, 50);
   rotate2(false, 90, 50);
@@ -445,7 +515,7 @@ void autonomous(void) {
 
 
 
-
+*/
 }
 
 /*---------------------------------------------------------------------------*/
