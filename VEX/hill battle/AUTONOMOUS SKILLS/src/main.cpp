@@ -367,21 +367,94 @@ void forwardtillbump (int speed) {
   end();
 }
 
-void moveto (double x, double y, double turn) {
+double targetangle;
+double magnitude;
+double FrBl;
+double FlBr;
+
+double backleft;
+double backright;
+double frontleft;
+double frontright;
+
+double scale;
+
+
+void moveto (double x, double y, double turnval) {
   
-  double targetangle = atan2(y,x);
+  targetangle = atan2(y,x);
   
-  double magnitude = sqrt(x*x + y*y) / 100;
+  magnitude = sqrt(x*x + y*y) / 100;
   
-  double FrBl = sin(targetangle - pi/4) * magnitude;
-  double FlBr = sin(targetangle + pi/4) * magnitude;
+  FrBl = sin(targetangle - pi/4) * magnitude;
+  FlBr = sin(targetangle + pi/4) * magnitude;
+
+  backleft = FrBl + turnval;
+  backright = FlBr - turnval;
+  frontleft = FlBr + turnval;
+  frontright = FrBl - turnval;
+
+  scale = std::max(std::max(abs(backleft) , abs(backright)) , std::max(abs(frontleft) , abs(frontright)));
+
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+  Brain.Screen.print(scale);
   
   
-  
-  
-  
-  
-  
+}
+
+void turncolour (bool way, int speed, std::string type) {
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+
+  if (way == true) {
+    leftback.spin(forward);
+    rightback.spin(reverse);
+    leftfront.spin(forward);
+    rightfront.spin(reverse);
+  } else if (way == false) {
+    leftback.spin(reverse);
+    rightback.spin(forward);
+    leftfront.spin(reverse);
+    rightfront.spin(forward);
+  }
+  if (type == "b") {
+    while (true) {
+      colourb.takeSnapshot(colourb__BLUEGOAL);
+      Brain.Screen.clearScreen();
+      Brain.Screen.setCursor(1, 1); 
+      Brain.Screen.print(colourb.objectCount);    
+      if (colourb.largestObject.centerX > 212 && colourb.largestObject.centerX < 222) {
+        break;
+      }
+      wait(.05, sec);
+    }
+  } else if (type == "r") {
+    while (true) {
+      colourb.takeSnapshot(colourb__REDGOAL);
+      Brain.Screen.clearScreen();
+      Brain.Screen.setCursor(1, 1); 
+      Brain.Screen.print(colourb.objectCount);    
+      if (colourb.largestObject.centerX > 212 && colourb.largestObject.centerX < 222) {
+        break;
+      }
+      wait(.05, sec);
+    }
+  } else if (type == "y") {
+    while (true) {
+      colourb.takeSnapshot(colourb__YELLOWGOAL);
+      Brain.Screen.clearScreen();
+      Brain.Screen.setCursor(1, 1); 
+      Brain.Screen.print(colourb.objectCount);    
+      if (colourb.largestObject.centerX > 170 && colourb.largestObject.centerX < 190) {
+        break;
+      }
+      wait(.05, sec);
+    }  
+  }
+  kill();
 }
 
 //    fwd-back:
@@ -439,11 +512,13 @@ void autonomous(void) {
   //potential for using match load rings here
 
   //Go back a bit and strafe a bit left
-  front(false, 5, 50);
+  front(false, 1, 50);
   strafe(false, 5, 50);
 
 
   rotate2(true, 85, 50); //96.1417757 degrees precisely
+  wait(1, seconds);
+  turncolour(true, 10, "y");
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
   front(false, 54.2112, 50);
@@ -455,7 +530,7 @@ void autonomous(void) {
   wait(1, seconds);
   
   //turn towards lower platform
-  rotate2(true, 10, 50);
+  rotate2(true, 15, 50);
 
   //move till collision with the platform?
 
@@ -474,10 +549,11 @@ void autonomous(void) {
   front(false, 15, 50);
 
   //turn back
-  rotate2(false, 20, 50);
+  rotate2(false, 25, 50);
+  wait(.5, seconds);
 
   //strafe to level platform
-  //strafe(true, 5, 50);*****
+  //strafe(true, 3, 50);
 
   //grab lets go of goal to balance the goal
   grab(true);
@@ -489,7 +565,9 @@ void autonomous(void) {
 
   lifty(true);
 
-  front(false, 48, 50);
+  front(false, 40, 50);
+  frontarm(false);
+  front(false, 10, 50);
 
   grab(false);
 
@@ -702,6 +780,8 @@ goalarm.setVelocity(100, percent);
      clamp.setBrake(hold);
      clampstopped = true;
     }
+
+    moveto(remote.Axis4.position(), remote.Axis3.position(), remote.Axis1.position());
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }

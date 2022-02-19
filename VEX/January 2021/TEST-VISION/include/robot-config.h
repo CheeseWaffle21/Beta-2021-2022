@@ -6,7 +6,7 @@ using signature = vision::signature;
 
 // VEXcode devices
 extern signature colour__BLUEGOAL;
-extern signature colour__GREENBOX;
+extern signature colour__YELLOWGOAL;
 extern signature colour__REDBOX;
 extern signature colour__SIG_4;
 extern signature colour__SIG_5;
