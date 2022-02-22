@@ -386,21 +386,52 @@ void moveto (double x, double y, double turnval) {
   
   magnitude = sqrt(x*x + y*y) / 100;
   
-  FrBl = sin(targetangle - pi/4) * magnitude;
-  FlBr = sin(targetangle + pi/4) * magnitude;
+  FrBl = sin(targetangle - pi/4) * magnitude * 1.4142131;
+  FlBr = sin(targetangle + pi/4) * magnitude * 1.4142131;
 
-  backleft = FrBl + turnval;
-  backright = FlBr - turnval;
-  frontleft = FlBr + turnval;
-  frontright = FrBl - turnval;
+  backleft = FrBl + turnval / 100;
+  backright = FlBr - turnval / 100;
+  frontleft = FlBr + turnval / 100;
+  frontright = FrBl - turnval / 100;
 
-  scale = std::max(std::max(abs(backleft) , abs(backright)) , std::max(abs(frontleft) , abs(frontright)));
+  scale = std::max(std::max(fabs(backleft) , fabs(backright)) , std::max(fabs(frontleft) , fabs(frontright)));
+
+  if (scale < 1) {
+    scale = 1;
+  }
 
   Brain.Screen.clearScreen();
   Brain.Screen.setCursor(1, 1);
-  Brain.Screen.print(scale);
-  
-  
+  Brain.Screen.print("Scale: %f", scale);
+
+  backleft = (backleft / scale) * 100;
+  backright = (backright / scale) * 100;
+  frontleft = (frontleft / scale) * 100;
+  frontright = (frontright / scale) * 100;
+
+  leftfront.setVelocity(frontleft, percent);
+  leftback.setVelocity(backleft, percent);
+  rightfront.setVelocity(frontright, percent);
+  rightback.setVelocity(backright, percent);
+
+  leftfront.spin(forward);
+  leftback.spin(forward);
+  rightfront.spin(forward);
+  rightback.spin(forward);
+
+  Brain.Screen.setCursor(2, 1);
+  Brain.Screen.print("backleft: %f", backleft);
+
+  Brain.Screen.setCursor(3, 1);
+  Brain.Screen.print("backright: %f", backright);
+
+  Brain.Screen.setCursor(4, 1);
+  Brain.Screen.print("frontleft: %f", frontleft);
+
+  Brain.Screen.setCursor(5, 1);
+  Brain.Screen.print("frontright: %f", frontright);
+
+
 }
 
 void turncolour (bool way, int speed, std::string type) {
@@ -447,8 +478,10 @@ void turncolour (bool way, int speed, std::string type) {
       colourb.takeSnapshot(colourb__YELLOWGOAL);
       Brain.Screen.clearScreen();
       Brain.Screen.setCursor(1, 1); 
-      Brain.Screen.print(colourb.objectCount);    
-      if (colourb.largestObject.centerX > 170 && colourb.largestObject.centerX < 190) {
+      Brain.Screen.print(colourb.objectCount);
+      Brain.Screen.setCursor(2, 1); 
+      Brain.Screen.print(colourb.largestObject.centerX);    
+      if (colourb.largestObject.centerX > 165 && colourb.largestObject.centerX < 185) {
         break;
       }
       wait(.05, sec);
@@ -518,10 +551,11 @@ void autonomous(void) {
 
   rotate2(true, 85, 50); //96.1417757 degrees precisely
   wait(1, seconds);
-  turncolour(true, 10, "y");
+  turncolour(true, 5, "y");
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
-  front(false, 54.2112, 50);
+  front(false, 50, 50);
+  front(false, 5, 30);
   
   
   //Transfer grab function to here
@@ -567,7 +601,7 @@ void autonomous(void) {
 
   front(false, 40, 50);
   frontarm(false);
-  front(false, 10, 50);
+  front(false, 12, 50);
 
   grab(false);
 
@@ -680,7 +714,7 @@ goalarm.setVelocity(100, percent);
       strafe = 0;
     }
 
-    leftback.setVelocity(front + rotate - strafe, percent);
+    /*leftback.setVelocity(front + rotate - strafe, percent);
     leftback.spin(forward);
 
     rightback.setVelocity(front - rotate + strafe, percent);
@@ -690,7 +724,7 @@ goalarm.setVelocity(100, percent);
     leftfront.spin(forward);
 
     rightfront.setVelocity(front - rotate - strafe, percent);
-    rightfront.spin(forward);
+    rightfront.spin(forward);*/
 
 
 
@@ -726,6 +760,7 @@ goalarm.setVelocity(100, percent);
     if(toggleEnabled){
       chain.spin(forward);
     } else if (remote.ButtonB.pressing()) {
+      chain.stop();
       chain.spin(reverse);
     }
     else{
@@ -781,7 +816,7 @@ goalarm.setVelocity(100, percent);
      clampstopped = true;
     }
 
-    moveto(remote.Axis4.position(), remote.Axis3.position(), remote.Axis1.position());
+    moveto(strafe, front, rotate);
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
