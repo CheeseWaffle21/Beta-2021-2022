@@ -346,10 +346,19 @@ void rotate3 (bool way, int head, int speed){
     leftfront.spin(reverse);
     rightfront.spin(forward);
 
-     waitUntil(sin((inertia.rotation(degrees)*pi/180)) <= 0.1);
-    kill();
+    while (true) {
+      Brain.Screen.clearScreen();
+      Brain.Screen.setCursor(1,1);
+      Brain.Screen.print(sin((inertia.rotation(degrees)*pi/180)));
+      if (sin((inertia.rotation(degrees)*pi/180)) > (sin((head)*pi/180) - .01) && sin((inertia.rotation(degrees)*pi/180)) < (sin((head)*pi/180)+.01)) {
+        break;
+      }
+      wait(5, msec);
+    }
+      kill();
+    }
   }
-}
+
 
 void forwardtillbump (int speed) {
   leftback.setVelocity(speed, percent);
@@ -434,7 +443,7 @@ void moveto (double x, double y, double turnval) {
 
 }
 
-void turncolour (bool way, int speed, std::string type) {
+void turncolour (bool way, bool side, int speed, std::string type) {
   leftback.setVelocity(speed, percent);
   rightback.setVelocity(speed, percent);
   rightfront.setVelocity(speed, percent);
@@ -451,41 +460,81 @@ void turncolour (bool way, int speed, std::string type) {
     leftfront.spin(reverse);
     rightfront.spin(forward);
   }
-  if (type == "b") {
-    while (true) {
-      colourb.takeSnapshot(colourb__BLUEGOAL);
-      Brain.Screen.clearScreen();
-      Brain.Screen.setCursor(1, 1); 
-      Brain.Screen.print(colourb.objectCount);    
-      if (colourb.largestObject.centerX > 212 && colourb.largestObject.centerX < 222) {
-        break;
+  
+  if (side == true) {
+    if (type == "b") {
+      while (true) {
+        colour.takeSnapshot(colour__BLUEGOAL);
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1, 1); 
+        Brain.Screen.print(colour.objectCount);    
+        if (colour.largestObject.centerX > 167 && colour.largestObject.centerX < 187) {
+          break;
+        }
+        wait(.05, sec);
       }
-      wait(.05, sec);
+    } else if (type == "r") {
+      while (true) {
+        colour.takeSnapshot(colour__REDGOAL);
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1, 1); 
+        Brain.Screen.print(colour.objectCount);    
+        if (colour.largestObject.centerX > 167 && colour.largestObject.centerX < 187) {
+          break;
+        }
+        wait(.05, sec);
+      }
+    } else if (type == "y") {
+      while (true) {
+        colour.takeSnapshot(colour__YELLOWGOAL);
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1, 1); 
+        Brain.Screen.print(colour.objectCount);
+        Brain.Screen.setCursor(2, 1); 
+        Brain.Screen.print(colour.largestObject.centerX);    
+        if (colour.largestObject.centerX > 160 && colour.largestObject.centerX < 180) {
+          break;
+        }
+        wait(.05, sec);
+      }  
     }
-  } else if (type == "r") {
-    while (true) {
-      colourb.takeSnapshot(colourb__REDGOAL);
-      Brain.Screen.clearScreen();
-      Brain.Screen.setCursor(1, 1); 
-      Brain.Screen.print(colourb.objectCount);    
-      if (colourb.largestObject.centerX > 212 && colourb.largestObject.centerX < 222) {
-        break;
+  } else if (side == false) {
+    if (type == "b") {
+      while (true) {
+        colourb.takeSnapshot(colourb__BLUEGOAL);
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1, 1); 
+        Brain.Screen.print(colourb.objectCount);    
+        if (colourb.largestObject.centerX > 167 && colourb.largestObject.centerX < 187) {
+          break;
+        }
+        wait(.05, sec);
       }
-      wait(.05, sec);
+    } else if (type == "r") {
+      while (true) {
+        colourb.takeSnapshot(colourb__REDGOAL);
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1, 1); 
+        Brain.Screen.print(colourb.objectCount);    
+        if (colourb.largestObject.centerX > 167 && colourb.largestObject.centerX < 187) {
+          break;
+        }
+        wait(.05, sec);
+      }
+    } else if (type == "y") {
+      while (true) {
+        colourb.takeSnapshot(colourb__YELLOWGOAL);
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1, 1); 
+        Brain.Screen.print(colourb.objectCount);
+        Brain.Screen.setCursor(2, 1); 
+        Brain.Screen.print(colourb.largestObject.centerX);    
+        if (colourb.largestObject.centerX > 167 && colourb.largestObject.centerX < 187) {
+          break;
+        }
+        wait(.05, sec);
+      }  
     }
-  } else if (type == "y") {
-    while (true) {
-      colourb.takeSnapshot(colourb__YELLOWGOAL);
-      Brain.Screen.clearScreen();
-      Brain.Screen.setCursor(1, 1); 
-      Brain.Screen.print(colourb.objectCount);
-      Brain.Screen.setCursor(2, 1); 
-      Brain.Screen.print(colourb.largestObject.centerX);    
-      if (colourb.largestObject.centerX > 165 && colourb.largestObject.centerX < 185) {
-        break;
-      }
-      wait(.05, sec);
-    }  
   }
   kill();
 }
@@ -551,7 +600,7 @@ void autonomous(void) {
 
   rotate2(true, 85, 50); //96.1417757 degrees precisely
   wait(1, seconds);
-  turncolour(true, 5, "y");
+  turncolour(true, false, 5, "y");
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
   front(false, 50, 50);
@@ -569,11 +618,9 @@ void autonomous(void) {
   //move till collision with the platform?
 
   //move forward 57.378 inches
-  front(false, 35, 30);
+  front(false, 40, 30);
 
-  /*maybe rotate perpendicularly to goal:
-  rotate2(false, -6, 50);
-  */
+
 
   //lift the lift
   lifty(false);
@@ -587,7 +634,7 @@ void autonomous(void) {
   wait(.5, seconds);
 
   //strafe to level platform
-  //strafe(true, 3, 50);
+  strafe(true, 3, 50);
 
   //grab lets go of goal to balance the goal
   grab(true);
@@ -605,29 +652,33 @@ void autonomous(void) {
 
   grab(false);
 
-  
+  frontarm(true);
 
-/*
-  //move backwards
-  front(true, 12, 50);
-  
-  front(true, 3, 50);
-  rotate2(false, 90, 50);
+  rotate2(true, 19, 30);
+
+  turncolour(true, true, 5, "y");
+
   frontarm(false);
-  
-  //move forwards till alliance goal
-  front(false, 28, 70);
 
-  //grab the alliance goal with clamp
+  forwardtillbump(50);
+
+  rotate2(true, 6, 30);
+
+  front(true, 70, 60);
+
+  front(false, 20, 60);
+
+  rotate3(false, -90, 30);
+
+  lifty(false);
+  
+  strafe(false, 15, 50);
+
+  front(false, 15, 50);
+
   grab(true);
 
-  //turn clockwise to face tall yellow
-  //push tall yellow to the opposite corner
-  
 
-
-
-*/
 }
 
 /*---------------------------------------------------------------------------*/
