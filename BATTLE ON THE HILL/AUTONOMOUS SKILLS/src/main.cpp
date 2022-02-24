@@ -585,7 +585,7 @@ void autonomous(void) {
   //Initialize inertial sensor
   inertia.startCalibration();
   wait(2, seconds);
-
+/*
   //Grab goal in front with front arm
   frontarm(false);
   forwardtillbump(50);
@@ -598,12 +598,12 @@ void autonomous(void) {
   strafe(false, 5, 50);
 
 
-  rotate2(true, 85, 50); //96.1417757 degrees precisely
-  wait(1, seconds);
+  rotate2(true, 80, 50); //96.1417757 degrees precisely
+  front(false, 8, 30);
   turncolour(true, false, 5, "y");
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
-  front(false, 50, 50);
+  front(false, 42, 50);
   front(false, 5, 30);
   
   
@@ -613,7 +613,7 @@ void autonomous(void) {
   wait(1, seconds);
   
   //turn towards lower platform
-  rotate2(true, 15, 50);
+  rotate2(true, 10, 50);
 
   //move till collision with the platform?
 
@@ -630,7 +630,7 @@ void autonomous(void) {
   front(false, 15, 50);
 
   //turn back
-  rotate2(false, 25, 50);
+  rotate2(false, 30, 50);
   wait(.5, seconds);
 
   //strafe to level platform
@@ -639,44 +639,77 @@ void autonomous(void) {
   //grab lets go of goal to balance the goal
   grab(true);
 
-
-  rotate3(false, 0, 40);
-
+  //rotate to align with blue goal
+  rotate3(false, -10, 40);
+  
   wait(1, seconds);
 
-  lifty(true);
 
-  front(false, 40, 50);
-  frontarm(false);
-  front(false, 12, 50);
 
-  grab(false);
+  lifty(true); //move back 4 bar down
+  turncolour(true, false, 7, "b"); //turn until blue is seen in the range it should be in
+  front(false, 40, 50); //go to blue goal; stop before getting there though
+  frontarm(false); //drop red one from front goal
+  front(false, 12, 50); // resume trip to blue goal
+  */
 
-  frontarm(true);
+  grab(false); //clamp down blue
 
-  rotate2(true, 19, 30);
+  frontarm(true); //pull arm back up as to not block vision sensor
 
-  turncolour(true, true, 5, "y");
+  rotate2(true, 22, 30); //rotate towards yellow central goal
 
-  frontarm(false);
+  turncolour(true, true, 5, "y"); //finish rotating with help of color
 
-  forwardtillbump(50);
+  frontarm(false); //put arm down for yellow goal
+
+  forwardtillbump(70); //go until yellow goal hits button
 
   rotate2(true, 6, 30);
 
-  front(true, 70, 60);
+  front(true, 75, 60);
 
-  front(false, 20, 60);
+  front(false, 45, 60);
 
   rotate3(false, -90, 30);
 
   lifty(false);
   
-  strafe(false, 15, 50);
+  strafe(false, 10, 50);
 
-  front(false, 15, 50);
+  front(false, 25, 50);
 
   grab(true);
+
+  front(true, 5, 50);
+
+  lifty(true);
+
+  rotate2(true, 85, 50);
+
+  turncolour(true, true, 5, "r");
+
+  forwardtillbump(70);
+
+  frontarm(true);
+
+  rotate2(true, 45, 50);
+
+  turncolour(true, false, 5, "y");
+
+  front(false, 22, 50);
+
+  grab(false);
+
+  front(false, 47, 50);
+
+  lifty(false);
+
+  front(false, 5, 50);
+
+  grab(true);
+
+
 
 
 }
