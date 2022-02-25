@@ -317,6 +317,73 @@ void deploy () {
   return;
 }
 
+double targetangle;
+double magnitude;
+double FrBl;
+double FlBr;
+
+double backleft;
+double backright;
+double frontleft;
+double frontright;
+
+double scale;
+
+#define pi 3.14159265
+
+
+void moveto (double x, double y, double turnval) {
+  
+  targetangle = atan2(y,x);
+  
+  magnitude = sqrt(x*x + y*y) / 100;
+  
+  FrBl = sin(targetangle - pi/4) * magnitude * 1.4142131;
+  FlBr = sin(targetangle + pi/4) * magnitude * 1.4142131;
+
+  backleft = FrBl + turnval / 100;
+  backright = FlBr - turnval / 100;
+  frontleft = FlBr + turnval / 100;
+  frontright = FrBl - turnval / 100;
+
+  scale = std::max(std::max(fabs(backleft) , fabs(backright)) , std::max(fabs(frontleft) , fabs(frontright)));
+
+  if (scale < 1) {
+    scale = 1;
+  }
+
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+  Brain.Screen.print("Scale: %f", scale);
+
+  backleft = (backleft / scale) * 100;
+  backright = (backright / scale) * 100;
+  frontleft = (frontleft / scale) * 100;
+  frontright = (frontright / scale) * 100;
+
+  leftfront.setVelocity(frontleft, percent);
+  leftback.setVelocity(backleft, percent);
+  rightfront.setVelocity(frontright, percent);
+  rightback.setVelocity(backright, percent);
+
+  leftfront.spin(forward);
+  leftback.spin(forward);
+  rightfront.spin(forward);
+  rightback.spin(forward);
+
+  Brain.Screen.setCursor(2, 1);
+  Brain.Screen.print("backleft: %f", backleft);
+
+  Brain.Screen.setCursor(3, 1);
+  Brain.Screen.print("backright: %f", backright);
+
+  Brain.Screen.setCursor(4, 1);
+  Brain.Screen.print("frontleft: %f", frontleft);
+
+  Brain.Screen.setCursor(5, 1);
+  Brain.Screen.print("frontright: %f", frontright);
+}
+
 void usercontrol(void) {
   // User control code here, inside the loop
 int front;
@@ -372,7 +439,7 @@ goalarm.setVelocity(100, percent);
       strafe = 0;
     }
 
-    leftback.setVelocity(front + rotate - strafe, percent);
+    /*leftback.setVelocity(front + rotate - strafe, percent);
     leftback.spin(forward);
 
     rightback.setVelocity(front - rotate + strafe, percent);
@@ -382,7 +449,7 @@ goalarm.setVelocity(100, percent);
     leftfront.spin(forward);
 
     rightfront.setVelocity(front - rotate - strafe, percent);
-    rightfront.spin(forward);
+    rightfront.spin(forward);*/
 
 
 
@@ -418,6 +485,7 @@ goalarm.setVelocity(100, percent);
     if(toggleEnabled){
       chain.spin(forward);
     } else if (remote.ButtonB.pressing()) {
+      chain.stop();
       chain.spin(reverse);
     }
     else{
@@ -472,6 +540,8 @@ goalarm.setVelocity(100, percent);
      clamp.setBrake(hold);
      clampstopped = true;
     }
+
+    moveto(strafe, front, rotate);
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }

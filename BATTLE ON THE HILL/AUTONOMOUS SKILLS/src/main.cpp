@@ -548,44 +548,12 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  /*strafe (false, 18, 50);
-  frontarm (false);
-  front (true, 18, 30);
-  frontarm (true);
-  strafe (true, 18, 30);
-  chain.spin(forward);
-  for (int i = 1; i <= 4; i++) {
-    front (false, 7, 70);
-    wait (2, seconds);
-    front (true, 7, 70);
-  }
-  rotate (true, 30, 50);
-  */
-  
-
-  /*
-  front (true, 90, 30);
-  
-
-  strafe (false, 11.7, 30);
-  front (false, 50, 30);
-
-  strafe (false, 17.7, 30);
-  front (true, 50, 30);
-  //front (false, 3, 30);
-
-  strafe (false, 25, 30);
-  front (false, 50, 30);
-
-  front (true, 90, 30);
-  strafe (false, 10, 30);
-  front (false, 90, 30);
-  */
-
   //Initialize inertial sensor
   inertia.startCalibration();
   wait(2, seconds);
-/*
+
+  /*
+
   //Grab goal in front with front arm
   frontarm(false);
   forwardtillbump(50);
@@ -651,6 +619,7 @@ void autonomous(void) {
   front(false, 40, 50); //go to blue goal; stop before getting there though
   frontarm(false); //drop red one from front goal
   front(false, 12, 50); // resume trip to blue goal
+  
   */
 
   grab(false); //clamp down blue
@@ -663,19 +632,19 @@ void autonomous(void) {
 
   frontarm(false); //put arm down for yellow goal
 
-  forwardtillbump(70); //go until yellow goal hits button
+  front(true, 60, 60); //go until yellow goal hits button
 
   rotate2(true, 6, 30);
 
   front(true, 75, 60);
 
-  front(false, 45, 60);
+  front(false, 35, 60);
 
   rotate3(false, -90, 30);
 
   lifty(false);
   
-  strafe(false, 10, 50);
+  strafe(false, 15, 50);
 
   front(false, 25, 50);
 
@@ -685,11 +654,17 @@ void autonomous(void) {
 
   lifty(true);
 
-  rotate2(true, 85, 50);
+  rotate2(true, 83, 50);
 
   turncolour(true, true, 5, "r");
 
+//collide with red goal
   forwardtillbump(70);
+  kill();
+  wait(0.5, seconds);
+  forwardtillbump(40);
+
+  front(true, 5, 50);
 
   frontarm(true);
 
@@ -701,13 +676,37 @@ void autonomous(void) {
 
   grab(false);
 
-  front(false, 47, 50);
+  
+
+  front(false, 45, 50);
 
   lifty(false);
+
+  wait(1, seconds);
 
   front(false, 5, 50);
 
   grab(true);
+
+  front(false, 5, 50);
+
+  lifty(true);
+
+  rotate3(false, -10, 30);
+
+  turncolour(false, false, 5, "r");
+
+  front(false, 20, 50);
+
+  grab(false);
+
+  front(true, 20, 50);
+
+  lifty(false);
+
+  rotate2(true, 90, 50);
+
+  
 
 
 
