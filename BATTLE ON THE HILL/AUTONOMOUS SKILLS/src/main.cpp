@@ -646,7 +646,7 @@ void autonomous(void) {
   
   strafe(false, 15, 50);
 
-  front(false, 25, 50);
+  front(false, 15, 50);
 
   grab(true);
 
@@ -664,7 +664,7 @@ void autonomous(void) {
   wait(0.5, seconds);
   forwardtillbump(40);
 
-  front(true, 5, 50);
+  //front(true, 5, 50);
 
   frontarm(true);
 
@@ -672,7 +672,7 @@ void autonomous(void) {
 
   turncolour(true, false, 5, "y");
 
-  front(false, 22, 50);
+  front(false, 24, 50);
 
   grab(false);
 
