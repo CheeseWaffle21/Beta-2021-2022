@@ -180,6 +180,39 @@ void front (bool way, double number, int speed) {
   return;
 }
 
+void frontgrab (double number, int speed = 80) {
+  reset();
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+
+  double target = (number * -fwdconversion) + (5 * fwdconversion);
+  leftback.spin(reverse);
+  rightback.spin(reverse);
+  leftfront.spin(reverse);
+  rightfront.spin(reverse);
+  int current;
+  while (true) {
+    current = fwdaverage();
+    if (current <= target) {
+      break;
+    }
+  }
+  grab(false);
+  while (true) {
+    current = fwdaverage();
+    if (current <= (number * -fwdconversion)) {
+      break;
+    }
+  }
+  end(); 
+  wait(.5, seconds);
+  return;
+}
+
+
+
 void strafe (bool way, double number, int speed) {
   reset();
   leftback.setVelocity(speed, percent);
@@ -558,12 +591,22 @@ void turncolour (bool way, bool side, int speed, std::string type) {
   kill();
 }
 
+void deploy () {
+  Brain.Screen.print("Event has occurred");
+  chain.resetPosition();
+  chain.setVelocity(100, percent);
+  chain.spinFor(-420, degrees, true);
+  chain.stop();
+  chain.spinFor(1000, degrees, false);
+}
+
 //    fwd-back:
 //    28 degrees = 1 inch
 //
 //    strafe:
 //    62 degrees = 1 inch
 void autonomous(void) {
+  int defaultspeed = 70;
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
@@ -571,33 +614,28 @@ void autonomous(void) {
   inertia.startCalibration();
   wait(2, seconds);
 
-  /*
+  ///*
 
   //Grab goal in front with front arm
   frontarm(false);
-  forwardtillbump(50);
+  forwardtillbump(40);
   frontarm(true);
+  
 
   //potential for using match load rings here
+  deploy();
 
   //Go back a bit and strafe a bit left
-  front(false, 1, 50);
-  strafe(false, 5, 50);
+  front(false, 1, defaultspeed);
+  strafe(false, 5, defaultspeed);
 
 
-  rotate2(true, 80, 50); //96.1417757 degrees precisely
-  front(false, 8, 30);
+  rotate2(true, 70, 50); //96.1417757 degrees precisely
+  front(false, 8, defaultspeed);
   turncolour(true, false, 5, "y");
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
-  front(false, 42, 50);
-  front(false, 5, 30);
-  
-  
-  //Transfer grab function to here
-  grab(false);
-
-  wait(1, seconds);
+  frontgrab(47, 80);
   
   //turn towards lower platform
   rotate2(true, 10, 50);
@@ -605,7 +643,7 @@ void autonomous(void) {
   //move till collision with the platform?
 
   //move forward 57.378 inches
-  front(false, 40, 30);
+  front(false, 40, defaultspeed);
 
 
 
@@ -614,14 +652,17 @@ void autonomous(void) {
   wait(1, seconds);
 
   //come to the platform
-  front(false, 15, 50);
+  front(false, 10, defaultspeed);
 
   //turn back
   rotate2(false, 30, 50);
   wait(.5, seconds);
 
   //strafe to level platform
-  strafe(true, 3, 50);
+  strafe(true, 10, defaultspeed);
+
+  //re-orient 
+  //rotate3(false, 90, 5);
 
   //grab lets go of goal to balance the goal
   grab(true);
@@ -629,21 +670,21 @@ void autonomous(void) {
   //rotate to align with blue goal
   rotate3(false, -10, 40);
   
-  wait(1, seconds);
+  wait(.5, seconds);
 
 
 
   lifty(true); //move back 4 bar down
   turncolour(true, false, 7, "b"); //turn until blue is seen in the range it should be in
-  front(false, 40, 50); //go to blue goal; stop before getting there though
+  front(false, 33, defaultspeed); //go to blue goal; stop before getting there though
   frontarm(false); //drop red one from front goal
-  front(false, 12, 50); // resume trip to blue goal
+  front(false, 12, defaultspeed); // resume trip to blue goal
   
   /////////////////////////////////////////////////////////////////////////////////////////////////////
 
   grab(false); //clamp down blue
 
-  frontarm(true); //pull arm back up as to not block vision sensor
+  //frontarm(true); //pull arm back up as to not block vision sensor
 
   rotate2(true, 22, 30); //rotate towards yellow central goal
 
@@ -651,21 +692,21 @@ void autonomous(void) {
 
   frontarm(false); //put arm down for yellow goal
 
-  front(true, 60, 60); //go until yellow goal hits button
+  front(true, 60, defaultspeed); //go until yellow goal hits button
 
-  rotate2(true, 6, 30);
+  rotate2(true, 3, 80); //rotate to desired tall yellow deposit
 
-  front(true, 75, 60);
+  front(true, 75, defaultspeed);//deposit tall yellow
 
-  front(false, 35, 60);
+  front(false, 35, 80);//move back to start balancing blue
 
-  rotate3(false, -90, 30);
+  rotate3(false, -90, 50);
 
   lifty(false);
   
-  strafe(false, 15, 50);
+  strafe(false, 15, 80);
 
-  front(false, 25, 50);
+  front(false, 25, 80);
 
   grab(true);
 
@@ -675,12 +716,12 @@ void autonomous(void) {
 
   lifty(true);
 
-  rotate2(true, 83, 30);
+  rotate2(true, 73, 30);
 
   turncolour(true, true, 5, "r");
 
   frontarm(false);
-*/////////////////////////////////////
+///////////////////////////////////////
 //collide with red goal
   forwardtillbump(30);
   kill();
@@ -712,7 +753,7 @@ void autonomous(void) {
 
   grab(true);
 
-  front(true, 15, 50);
+  front(true, 20, 50);
 
   lifty(true);
 
@@ -722,7 +763,7 @@ void autonomous(void) {
 
   front(false, 50, 30);
   
-  //*/
+  ///
 
   grab(false);
 
@@ -742,6 +783,7 @@ void autonomous(void) {
 
   front(true, 10, 50);
 
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -753,25 +795,7 @@ void autonomous(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-void deploy () {
-  Brain.Screen.print("Event has occurred");
-  chainencoder.setPosition(0, degrees);
-  chain.spin(reverse);
-  if (chainencoder.position(degrees) <= -180) {
-    chain.stop();
-  }
-  /*      while (true) {
-    Brain.Screen.clearScreen();
-    Brain.Screen.setCursor(1, 1);
-    Brain.Screen.print(chainencoder.position(degrees));
-    if (chainencoder.position(degrees) >= 180) {
-      break;
-    }
-    wait(.05, sec);
-  }
-  chain.stop();*/
-  return;
-}
+
 
 void usercontrol(void) {
   // User control code here, inside the loop
