@@ -104,6 +104,8 @@ void grab (bool up) {
   clamp.setBrake(hold);
 }
 
+
+
 //False is up, true is down.
 void lifty (bool up) {
   lift.resetPosition();
@@ -124,6 +126,45 @@ int fwdaverage () {
   Brain.Screen.setCursor(1, 1);
   Brain.Screen.print(total);
   return total;
+}
+
+void frontgrab (double number, int speed = 80) {
+  reset();
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+
+  double target = (number * -fwdconversion) + (7 * fwdconversion);
+  leftback.spin(reverse);
+  rightback.spin(reverse);
+  leftfront.spin(reverse);
+  rightfront.spin(reverse);
+  int current;
+  while (true) {
+    current = fwdaverage();
+    if (current <= target) {
+      break;
+    }
+  }
+  grab(false);
+  while (true) {
+    current = fwdaverage();
+    if (current <= (number * -fwdconversion)) {
+      break;
+    }
+  }
+  end(); 
+  return;
+}
+
+void deploy () {
+  Brain.Screen.print("Event has occurred");
+  chain.resetPosition();
+  chain.setVelocity(100, percent);
+  chain.spinFor(-410, degrees, true);
+  chain.stop();
+  chain.spinFor(1000, degrees, false);
 }
 
 //
@@ -179,39 +220,6 @@ void front (bool way, double number, int speed) {
   wait(.5, seconds);
   return;
 }
-
-void frontgrab (double number, int speed = 80) {
-  reset();
-  leftback.setVelocity(speed, percent);
-  rightback.setVelocity(speed, percent);
-  rightfront.setVelocity(speed, percent);
-  leftfront.setVelocity(speed, percent);
-
-  double target = (number * -fwdconversion) + (5 * fwdconversion);
-  leftback.spin(reverse);
-  rightback.spin(reverse);
-  leftfront.spin(reverse);
-  rightfront.spin(reverse);
-  int current;
-  while (true) {
-    current = fwdaverage();
-    if (current <= target) {
-      break;
-    }
-  }
-  grab(false);
-  while (true) {
-    current = fwdaverage();
-    if (current <= (number * -fwdconversion)) {
-      break;
-    }
-    break;
-  }
-  end(); 
-  return;
-}
-
-
 
 void strafe (bool way, double number, int speed) {
   reset();
@@ -341,7 +349,7 @@ void rotate2 (bool way, int target, int speed) {
   rightback.setVelocity(speed, percent);
   rightfront.setVelocity(speed, percent);
   leftfront.setVelocity(speed, percent);
-  
+
   int hdegrees;
 
   if (way == true) {
@@ -362,7 +370,7 @@ void rotate2 (bool way, int target, int speed) {
     waitUntil(inertia.rotation(degrees) <= hdegrees);
     end();
   }
-  wait(.5, seconds);  
+
 }
 
 void rotate3 (bool way, int head, int speed){
@@ -370,8 +378,8 @@ void rotate3 (bool way, int head, int speed){
   rightback.setVelocity(speed, percent);
   rightfront.setVelocity(speed, percent);
   leftfront.setVelocity(speed, percent);
-  
-  
+
+
 
   if (way==false) {
     leftback.spin(reverse);
@@ -386,6 +394,7 @@ void rotate3 (bool way, int head, int speed){
       if (sin((inertia.rotation(degrees)*pi/180)) > (sin((head)*pi/180) - .01) && sin((inertia.rotation(degrees)*pi/180)) < (sin((head)*pi/180)+.01)) {
         break;
       }
+      wait(5, msec);
     }
       kill();
     }
@@ -402,10 +411,10 @@ void rotate3 (bool way, int head, int speed){
         if (sin((inertia.rotation(degrees)*pi/180)) > (sin((head)*pi/180) - .01) && sin((inertia.rotation(degrees)*pi/180)) < (sin((head)*pi/180)+.01)) {
           break;
         }
+        wait(5, msec);
       }
         kill();
     }
-    wait(.5, seconds);
   }
 
 
@@ -423,7 +432,6 @@ void forwardtillbump (int speed) {
   waitUntil(goallimit.pressing());
 
   end();
-  wait(.5, seconds);
 }
 
 double targetangle;
@@ -440,11 +448,11 @@ double scale;
 
 
 void moveto (double x, double y, double turnval) {
-  
+
   targetangle = atan2(y,x);
-  
+
   magnitude = sqrt(x*x + y*y) / 100;
-  
+
   FrBl = sin(targetangle - pi/4) * magnitude * 1.4142131;
   FlBr = sin(targetangle + pi/4) * magnitude * 1.4142131;
 
@@ -510,7 +518,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
     leftfront.spin(reverse);
     rightfront.spin(forward);
   }
-  
+
   if (side == true) {
     if (type == "b") {
       while (true) {
@@ -521,6 +529,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         if (colour.largestObject.centerX > 167 && colour.largestObject.centerX < 187) {
           break;
         }
+        wait(.05, sec);
       }
     } else if (type == "r") {
       while (true) {
@@ -531,6 +540,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         if (colour.largestObject.centerX > 167 && colour.largestObject.centerX < 187) {
           break;
         }
+        wait(.05, sec);
       }
     } else if (type == "y") {
       while (true) {
@@ -540,9 +550,10 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         Brain.Screen.print(colour.objectCount);
         Brain.Screen.setCursor(2, 1); 
         Brain.Screen.print(colour.largestObject.centerX);    
-        if (colour.largestObject.centerX > 140 && colour.largestObject.centerX < 160) {
+        if (colour.largestObject.centerX > 160 && colour.largestObject.centerX < 180) {
           break;
         }
+        wait(.05, sec);
       }  
     }
   } else if (side == false) {
@@ -555,6 +566,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         if (colourb.largestObject.centerX > 167 && colourb.largestObject.centerX < 187) {
           break;
         }
+        wait(.05, sec);
       }
     } else if (type == "r") {
       while (true) {
@@ -567,6 +579,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         if (colourb.largestObject.centerX > 140 && colourb.largestObject.centerX < 155) {
           break;
         }
+        wait(.05, sec);
       }
     } else if (type == "y") {
       while (true) {
@@ -576,24 +589,14 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         Brain.Screen.print(colourb.objectCount);
         Brain.Screen.setCursor(2, 1); 
         Brain.Screen.print(colourb.largestObject.centerX);    
-        if (colourb.largestObject.centerX > 157 && colourb.largestObject.centerX < 177) {
+        if (colourb.largestObject.centerX > 167 && colourb.largestObject.centerX < 187) {
           break;
         }
+        wait(.05, sec);
       }  
     }
   }
-  
   kill();
-  wait(.5, seconds);
-}
-
-void deploy () {
-  Brain.Screen.print("Event has occurred");
-  chain.resetPosition();
-  chain.setVelocity(100, percent);
-  chain.spinFor(-420, degrees, true);
-  chain.stop();
-  chain.spinFor(1000, degrees, false);
 }
 
 //    fwd-back:
@@ -602,128 +605,92 @@ void deploy () {
 //    strafe:
 //    62 degrees = 1 inch
 void autonomous(void) {
-  int defaultspeed = 70;
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  int defaultspeed = 80;
   //Initialize inertial sensor
   inertia.startCalibration();
   wait(2, seconds);
 
-  ///*
-
+  
   //Grab goal in front with front arm
   frontarm(false);
-  forwardtillbump(40);
+  forwardtillbump(50);
   frontarm(true);
-  
-
   //potential for using match load rings here
-  deploy();
-
   //Go back a bit and strafe a bit left
-  front(false, 1, defaultspeed);
-  strafe(false, 5, defaultspeed);
-
-
-  rotate3(true, 75, 50); //96.1417757 degrees precisely
-  front(false, 8, defaultspeed);
+  front(false, 1, 50);
+  strafe(false, 5, 50);
+  deploy();
+  rotate2(true, 80, 50); //96.1417757 degrees precisely
+  front(false, 8, 30);
   turncolour(true, false, 5, "y");
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
-  frontgrab(47, 80);
+  //front(false, 42, 50);
+  //front(false, 5, 30);
+  frontgrab(45, defaultspeed);
+  
+  //Transfer grab function to here
+  grab(false);
+  wait(1, seconds);
   
   //turn towards lower platform
-  rotate2(true, 31, 50);
-
+  rotate2(true, 15, 50);
+  //move till collision with the platform?
   //move forward 57.378 inches
-  front(false, 40, defaultspeed);
-
-
-
+  front(false, 40, 50);
   //lift the lift
   lifty(false);
   wait(1, seconds);
-
   //come to the platform
-  front(false, 13, defaultspeed);
-
+  front(false, 18, 50);
   //turn back
   rotate2(false, 30, 50);
   wait(.5, seconds);
-
   //strafe to level platform
-  strafe(true, 10, defaultspeed);
-
-  //re-orient 
-  //rotate3(false, 90, 5);
-
+  strafe(true, 8, 50);
   //grab lets go of goal to balance the goal
   grab(true);
-
   //rotate to align with blue goal
   rotate3(false, -10, 40);
   
-  wait(.5, seconds);
-
-
-
+  wait(1, seconds);
   lifty(true); //move back 4 bar down
   turncolour(true, false, 7, "b"); //turn until blue is seen in the range it should be in
-  front(false, 33, defaultspeed); //go to blue goal; stop before getting there though
+  front(false, 40, 50); //go to blue goal; stop before getting there though
   frontarm(false); //drop red one from front goal
-  turncolour(false, false, 7, "b");
-  turncolour(true, false, 7, "b");
-  front(false, 12, defaultspeed); // resume trip to blue goal
-  
+  front(false, 17, 50); // resume trip to blue goal
   
   /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  
   grab(false); //clamp down blue
-  frontarm(true);//pull arm back up as to not block vision sensor
-
-  rotate2(true, 30, 5); //rotate towards yellow central goal
-
-  turncolour(true, true, 3, "y"); //finish rotating with help of color
-
+  frontarm(true); //pull arm back up as to not block vision sensor
+  rotate2(true, 22, 30); //rotate towards yellow central goal
+  turncolour(true, true, 5, "y"); //finish rotating with help of color
   frontarm(false); //put arm down for yellow goal
-
   front(true, 60, defaultspeed); //go until yellow goal hits button
-
-  rotate2(true, 3, 80); //rotate to desired tall yellow deposit
-
-  front(true, 75, defaultspeed);//deposit tall yellow
-
-  front(false, 35, 80);//move back to start balancing blue
-
-  rotate3(false, -90, 50);
-
+  rotate2(true, 6, 30);
+  front(true, 75, defaultspeed);
+  front(false, 35, 60);
+  rotate3(false, -90, 30);
   lifty(false);
   
-  strafe(false, 15, 80);
-
-  front(false, 25, 80);
-
+  strafe(false, 15, 50);
+  front(false, 13, 50);
   grab(true);
-
   /////////////////////////////////////////////////
-
   front(true, 5, 50);
-
   lifty(true);
-
-  rotate2(true, 73, 30);
-
+  rotate2(true, 83, 30);
   turncolour(true, true, 5, "r");
-
   frontarm(false);
-///////////////////////////////////////
+/////////////////////////////////////
 //collide with red goal
-  forwardtillbump(30);
+  forwardtillbump(defaultspeed);
   kill();
   wait(0.5, seconds);
-  forwardtillbump(40);
+  forwardtillbump(defaultspeed);
 
   frontarm(true);
 
@@ -735,11 +702,11 @@ void autonomous(void) {
 
   grab(false);
   wait(.5, seconds);
-  
+
   rotate3(true, 90, 30);
 
   lifty(false);
-  
+
   strafe(true, 20, 80);
 
   rotate3(false, 90, 30);
@@ -750,7 +717,7 @@ void autonomous(void) {
 
   grab(true);
 
-  front(true, 20, 50);
+  front(true, 15, 50);
 
   lifty(true);
 
@@ -759,8 +726,8 @@ void autonomous(void) {
   turncolour(false, false, 5, "r");
 
   front(false, 50, 30);
-  
-  ///
+
+  //*/
 
   grab(false);
 
@@ -780,7 +747,6 @@ void autonomous(void) {
 
   front(true, 10, 50);
 
-
 }
 
 /*---------------------------------------------------------------------------*/
@@ -792,7 +758,6 @@ void autonomous(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-
 
 void usercontrol(void) {
   // User control code here, inside the loop
@@ -851,13 +816,10 @@ goalarm.setVelocity(100, percent);
 
     /*leftback.setVelocity(front + rotate - strafe, percent);
     leftback.spin(forward);
-
     rightback.setVelocity(front - rotate + strafe, percent);
     rightback.spin(forward);
-
     leftfront.setVelocity(front + rotate + strafe, percent);
     leftfront.spin(forward);
-
     rightfront.setVelocity(front - rotate - strafe, percent);
     rightfront.spin(forward);*/
 
@@ -908,7 +870,6 @@ goalarm.setVelocity(100, percent);
       toggleEnabledb = !toggleEnabledb;
     }
     else if (!buttonB) buttonPressedb = false;
-
     if(toggleEnabledb){
       deploy ();
     }*/
@@ -973,4 +934,3 @@ int main() {
     wait(100, msec);
   }
 }
-
