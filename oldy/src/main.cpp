@@ -507,6 +507,18 @@ void turncolour (bool way, bool side, int speed, std::string type) {
   rightfront.setVelocity(speed, percent);
   leftfront.setVelocity(speed, percent);
 
+  if (side == true) {
+    if (!colour.installed()) {
+      return;
+      end();
+    }    
+  } else if (side == false) {
+    if (!colourb.installed()) {
+      return;
+      end();
+    }        
+  }
+
   if (way == true) {
     leftback.spin(forward);
     rightback.spin(reverse);
@@ -563,7 +575,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         Brain.Screen.clearScreen();
         Brain.Screen.setCursor(1, 1); 
         Brain.Screen.print(colourb.objectCount);    
-        if (colourb.largestObject.centerX > 167 && colourb.largestObject.centerX < 187) {
+        if (colourb.largestObject.centerX > 165 && colourb.largestObject.centerX < 185) {
           break;
         }
         wait(.05, sec);
@@ -645,7 +657,7 @@ void autonomous(void) {
   lifty(false);
   wait(1, seconds);
   //come to the platform
-  front(false, 18, 50);
+  front(false, 16, 50);
   //turn back
   rotate2(false, 30, 50);
   wait(.5, seconds);
@@ -654,14 +666,14 @@ void autonomous(void) {
   //grab lets go of goal to balance the goal
   grab(true);
   //rotate to align with blue goal
-  rotate3(false, -10, 40);
+  rotate3(false, -1, 40);
   
   wait(1, seconds);
   lifty(true); //move back 4 bar down
   turncolour(true, false, 7, "b"); //turn until blue is seen in the range it should be in
   front(false, 40, 50); //go to blue goal; stop before getting there though
   frontarm(false); //drop red one from front goal
-  front(false, 17, 50); // resume trip to blue goal
+  front(false, 10, 50); // resume trip to blue goal
   
   /////////////////////////////////////////////////////////////////////////////////////////////////////
   grab(false); //clamp down blue
@@ -672,15 +684,17 @@ void autonomous(void) {
   front(true, 60, defaultspeed); //go until yellow goal hits button
   rotate2(true, 6, 30);
   front(true, 75, defaultspeed);
-  front(false, 35, 60);
+  front(false, 35, defaultspeed);
   rotate3(false, -90, 30);
   lifty(false);
   
-  strafe(false, 15, 50);
-  front(false, 13, 50);
+  strafe(false, 15, defaultspeed);
+  rotate3(true, -90, 30);
+
+  front(false, 13, defaultspeed);
   grab(true);
   /////////////////////////////////////////////////
-  front(true, 5, 50);
+  front(true, 5, defaultspeed);
   lifty(true);
   rotate2(true, 83, 30);
   turncolour(true, true, 5, "r");
@@ -698,7 +712,7 @@ void autonomous(void) {
 
   turncolour(true, false, 5, "y");
 
-  front(false, 25, 30);
+  frontgrab(25, defaultspeed);
 
   grab(false);
   wait(.5, seconds);
