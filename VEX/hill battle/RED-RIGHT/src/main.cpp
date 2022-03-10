@@ -22,6 +22,9 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+#include <cmath>
+#include "math.h"
+#define pi 3.14159265
 
 using namespace vex;
 
@@ -43,7 +46,7 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
+  inertia.calibrate();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -57,10 +60,81 @@ void pre_auton(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+int total;
+double fwdconversion = 28.6478898;
+int fwdaverage () {
+  total = ((leftback.position(degrees) + rightback.position(degrees) + rightfront.position(degrees) + leftfront.position(degrees)) / 4);
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+  Brain.Screen.print(total);
+  return total;
+}
+
+void end () {
+  leftback.stop();
+  rightback.stop();
+  rightfront.stop();
+  leftfront.stop();
+  return;
+}
+
+void reset () {
+  leftback.resetPosition();
+  rightback.resetPosition();
+  rightfront.resetPosition();
+  leftfront.resetPosition();
+  return;
+}
 
 
 
-void front (int speed, bool near, int far) {
+void front (bool way, double number, int speed) {
+  reset();
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+  if (way == true) {
+
+    double target = number * fwdconversion;
+    leftback.spin(forward);
+    rightback.spin(forward);
+    leftfront.spin(forward);
+    rightfront.spin(forward);
+    int current;
+    while (true) {
+      current = fwdaverage();
+      if (current >= target) {
+        break;
+      }
+    }
+    end();
+
+  } else if (way == false) {
+
+    double target = number * -fwdconversion;
+    leftback.spin(reverse);
+    rightback.spin(reverse);
+    leftfront.spin(reverse);
+    rightfront.spin(reverse);
+    int current;
+    while (true) {
+      current = fwdaverage();
+      if (current <= target) {
+        break;
+      }
+    }
+    end();
+
+  }
+  wait(.5, seconds);
+  return;
+}
+
+
+
+
+void fronty (int speed, bool near, int far) {
   leftback.setVelocity(speed, percent);
   rightback.setVelocity(speed, percent);
   leftfront.setVelocity(speed, percent);
@@ -113,6 +187,86 @@ void grab (bool up) {
   }
 }
 
+void kill () {
+  leftback.stop(hold);
+  rightback.stop(hold);
+  rightfront.stop(hold);
+  leftfront.stop(hold);
+  return;
+}
+
+void rotate2 (bool way, int target, int speed) {
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+
+  int hdegrees;
+
+  if (way == true) {
+    hdegrees = inertia.rotation(degrees) + target;
+    leftback.spin(forward);
+    rightback.spin(reverse);
+    leftfront.spin(forward);
+    rightfront.spin(reverse);
+    waitUntil(inertia.rotation(degrees) >= hdegrees);
+    end();
+
+  } else if (way == false) {
+    hdegrees = inertia.rotation(degrees) - target;
+    leftback.spin(reverse);
+    rightback.spin(forward);
+    leftfront.spin(reverse);
+    rightfront.spin(forward);
+    waitUntil(inertia.rotation(degrees) <= hdegrees);
+    end();
+  }
+
+}
+
+void rotate3 (bool way, int head, int speed){
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+
+  if (way==false) {
+    leftback.spin(reverse);
+    rightback.spin(forward);
+    leftfront.spin(reverse);
+    rightfront.spin(forward);
+
+    while (true) {
+      Brain.Screen.clearScreen();
+      Brain.Screen.setCursor(1,1);
+      Brain.Screen.print(sin((inertia.rotation(degrees)*pi/180)));
+      if (sin((inertia.rotation(degrees)*pi/180)) > (sin((head)*pi/180) - .01) && sin((inertia.rotation(degrees)*pi/180)) < (sin((head)*pi/180)+.01)) {
+        break;
+   
+      }
+      wait(5, msec);
+    }
+      kill();
+    }
+    if (way==true) {
+      leftback.spin(forward);
+      rightback.spin(reverse);
+      leftfront.spin(forward);
+      rightfront.spin(reverse);
+
+      while (true) {
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1,1);
+        Brain.Screen.print(sin((inertia.rotation(degrees)*pi/180)));
+        if (sin((inertia.rotation(degrees)*pi/180)) > (sin((head)*pi/180) - .01) && sin((inertia.rotation(degrees)*pi/180)) < (sin((head)*pi/180)+.01)) {
+          break;
+        }
+       
+        wait(5, msec);
+      }
+        kill();
+    }
+  }
 
 
 void pause () {
@@ -122,13 +276,96 @@ void pause () {
   leftback.setBrake(hold); 
 }
 
+void frontpid (vex::directionType dir, double aim, int threshold, int targetangle = NULL) {
+  if (targetangle == NULL) {
+    targetangle = inertia.rotation(degrees);
+  }
+  double turnerror = 0;
+  bool stay = true;
+  double ik = .1; //tune
+  double corrector = 0;
+  double kp = .2; //tune
+  double ki = .00;//02; //tune
+  double kd = .35; //tune
+  double lasterror = 0;
+  double accelerator = 1; //tune
+  double error = 0;
+  double integral = 0;
+  double derivative = 0;
+  double speed = 0;
+  double previousspeed = 0;
+  double target = aim * fwdconversion;
+  double tolerance = threshold * fwdconversion;
+  reset();
+  while (stay == true){
+    error = target - fwdaverage();
+    integral = integral + error;
+
+    
+    derivative = error - lasterror;
+
+    speed = fabs(error * kp) + fabs(integral * ki) + fabs(derivative * kd);
+    if (dir == forward) {
+      if ((speed - previousspeed) > accelerator) {
+        speed = previousspeed + accelerator;
+      } else if ((speed - previousspeed) > -accelerator) {
+        speed = previousspeed - accelerator;
+      }
+    } else if (dir == reverse) {
+      if ((speed - previousspeed) > accelerator) {
+        speed = previousspeed + accelerator;
+      } else if ((speed - previousspeed) > -accelerator) {
+        speed = previousspeed - accelerator;
+      }
+    }
+
+    turnerror = (targetangle - inertia.rotation(degrees)) * ik;
+    
+
+
+    leftback.setVelocity(fabs(speed) + turnerror, percent);
+    rightback.setVelocity(fabs(speed) - turnerror, percent);
+    leftfront.setVelocity(fabs(speed) + turnerror, percent);
+    rightfront.setVelocity(fabs(speed) - turnerror, percent);
+    leftfront.spin(dir);
+    rightfront.spin(dir);
+    leftback.spin(dir);
+    rightback.spin(dir);
+
+    if (dir == forward) {
+      if (error <= tolerance) {
+        stay = false;
+        break;
+
+      }
+    } else if (dir == reverse) {
+      if (error >= tolerance) {
+        stay = false;
+        break;
+
+      }
+    }
+
+    lasterror = error;
+    previousspeed = speed;
+
+    wait(20, msec);
+  }
+  kill();
+}
+
 
 void autonomous(void) {
-  // ..........................................................................
+    // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
   //int backspace = 344;
   //int frontspace = 101;
+
+  frontpid(forward, 150, 1);
+  frontpid(reverse, -150, 1);
+
+  /*
   Brain.Screen.print("this is autonomous haha");
   //front(-50, false, 1370);
   leftback.setVelocity(-100, percent);
@@ -149,6 +386,7 @@ void autonomous(void) {
     wait(.05, sec);
     }
   grab(false);
+  lift.spinFor(forward, 360, degrees, false);
     while (true) {
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1); 
@@ -166,7 +404,17 @@ void autonomous(void) {
   rightback.setBrake(hold);
   leftfront.setBrake(hold);
   leftback.setBrake(hold); 
-  front(100, true, 600);
+  rotate2(true, 30, 80);
+  rotate2(false, 30, 80);
+  rotate3(true, 3, 7);
+  front(true, 35, 100);
+  leftback.setVelocity(-20, percent);
+  rightback.setVelocity(-20, percent);
+  leftfront.setVelocity(-20, percent);
+  rightfront.setVelocity(-20, percent);
+
+  rotate2(false, 20, 60);
+
   leftback.setVelocity(-20, percent);
   rightback.setVelocity(-20, percent);
   leftfront.setVelocity(-20, percent);
@@ -175,6 +423,9 @@ void autonomous(void) {
   rightfront.spin(reverse);
   leftback.spin(forward);
   rightback.spin(reverse);
+  
+  
+
   while (true) {
     colour.takeSnapshot(colour__REDGOAL);
     Brain.Screen.clearScreen();
@@ -209,10 +460,10 @@ void autonomous(void) {
   goalarm.setBrake(hold);
 
 
-  leftback.setVelocity(40, percent);
-  rightback.setVelocity(40, percent);
-  leftfront.setVelocity(40, percent);
-  rightfront.setVelocity(40, percent);
+  leftback.setVelocity(90, percent);
+  rightback.setVelocity(90, percent);
+  leftfront.setVelocity(90, percent);
+  rightfront.setVelocity(90, percent);
   leftfront.spin(forward);
   rightfront.spin(forward);
   leftback.spin(forward);
@@ -223,15 +474,6 @@ void autonomous(void) {
     }
     wait(.05, sec);
   }
-  wait(.3, seconds);
-  leftfront.stop();
-  rightfront.stop();
-  leftback.stop();
-  rightback.stop();
-  rightfront.setBrake(brake);
-  rightback.setBrake(brake);
-  leftfront.setBrake(brake);
-  leftback.setBrake(brake);
 
   goalarm.spin(forward);
   while (true) {
@@ -244,6 +486,14 @@ void autonomous(void) {
     wait(1, sec);
   }
   goalarm.stop();
+  leftfront.stop();
+  rightfront.stop();
+  leftback.stop();
+  rightback.stop();
+  rightfront.setBrake(brake);
+  rightback.setBrake(brake);
+  leftfront.setBrake(brake);
+  leftback.setBrake(brake);
   goalarm.setBrake(hold);
 
   rightfront.setBrake(coast);
@@ -268,10 +518,28 @@ void autonomous(void) {
 
   //Nathan Reese smells like grease
   
-  leftfront.spin(reverse);
-  rightfront.spin(reverse);
+ //rotate3(true, 270, 90);
+
+ front(false, 10, 100);
+
+ chain.setVelocity(100, percent);
+  chainencoder.setPosition(0, degrees);
+  chain.spin(forward);
+  while (true) {
+    Brain.Screen.clearScreen();
+    Brain.Screen.setCursor(1, 1);
+    Brain.Screen.print(chainencoder.position(degrees));
+    if (chainencoder.position(degrees) <= -2000) {
+      break;
+    }
+    wait(.05, sec);
+  }
+  chain.stop();
+ 
   leftback.spin(reverse);
-  rightback.spin(reverse);
+  rightback.spin(forward);
+  leftfront.spin(forward);
+  rightfront.spin(reverse);
 
   wait(1.25, seconds);
   leftfront.stop();
@@ -287,7 +555,10 @@ void autonomous(void) {
 
   
   return;
+
+  */
 }
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */

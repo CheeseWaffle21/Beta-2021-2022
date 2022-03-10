@@ -26,6 +26,7 @@ extern sonar distancer;
 extern pot potG;
 extern encoder chainencoder;
 extern bumper goallimit;
+extern inertial inertia;
 
 
 
