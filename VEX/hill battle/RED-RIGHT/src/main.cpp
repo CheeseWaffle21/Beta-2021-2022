@@ -61,7 +61,14 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 int total;
+int total2;
 double fwdconversion = 28.6478898;
+
+int fwdaverageright (){
+  total2 = ((rightback.position(degrees)+rightfront.position(degrees)) / 2);
+  return total2;
+}
+
 int fwdaverage () {
   total = ((leftback.position(degrees) + rightback.position(degrees) + rightfront.position(degrees) + leftfront.position(degrees)) / 4);
   Brain.Screen.clearScreen();
@@ -296,6 +303,11 @@ void frontpid (vex::directionType dir, double aim, int threshold, int targetangl
   double previousspeed = 0;
   double target = aim * fwdconversion;
   double tolerance = threshold * fwdconversion;
+  double error2;
+  double integral2;
+  double derivative2;
+  double lasterror2;
+   
   reset();
   while (stay == true){
     error = target - fwdaverage();
@@ -303,6 +315,12 @@ void frontpid (vex::directionType dir, double aim, int threshold, int targetangl
 
     
     derivative = error - lasterror;
+
+    error2 = target - fwdaverageright();
+
+    integral2 += error2;
+
+    derivative2 = error2 - lasterror2;
 
     speed = fabs(error * kp) + fabs(integral * ki) + fabs(derivative * kd);
     if (dir == forward) {
@@ -319,7 +337,24 @@ void frontpid (vex::directionType dir, double aim, int threshold, int targetangl
       }
     }
 
-    turnerror = (targetangle - inertia.rotation(degrees)) * ik;
+    error2 = (targetangle - inertia.rotation(degrees)) * ik;
+    
+    
+
+
+    if (inertia.rotation(degrees) < targetangle) {
+      
+      newspeedRight = errorRight * constantprop + integral * constantintegral + deriv *constantderiv;
+
+      
+
+    } 
+    if (inertia.rotation(degrees) < targetangle) {
+      newspeedLeft = speedLeft * slightlydifferentconstant;
+    }
+
+
+
     
 
 
