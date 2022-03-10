@@ -354,6 +354,32 @@ void frontpid (vex::directionType dir, double aim, int threshold, int targetangl
   kill();
 }
 
+void straightpid(int aim, int threshold, int targetangle = inertia.rotation(degrees)) {
+
+  double turnerror = 0;
+  bool stay = true;
+  double ik = .1; //tune
+  double corrector = 0;
+  double kp = .2; //tune
+  double ki = .00;//02; //tune
+  double kd = .35; //tune
+  double lasterror = 0;
+  double accelerator = 1; //tune
+  double error = 0;
+  double integral = 0;
+  double derivative = 0;
+  double speed = 0;
+  double previousspeed = 0;
+  double target = aim * fwdconversion;
+  double tolerance = threshold * fwdconversion;
+  reset();
+  while (stay == true){
+
+    error = targetangle - inertia.rotation(degrees);
+
+
+  }
+}
 
 void autonomous(void) {
     // ..........................................................................

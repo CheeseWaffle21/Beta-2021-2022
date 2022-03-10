@@ -111,11 +111,11 @@ void lifty (bool up) {
   lift.resetPosition();
   if (up == false){
     lift.setVelocity(100, percent);
-    lift.rotateFor(1200, degrees, false);
+    lift.rotateFor(1370, degrees, false);
   } 
   else {
     lift.setVelocity(100, percent);
-    lift.rotateFor(-1200, degrees, false);
+    lift.rotateFor(-1370, degrees, false);
   }
 }
 //Takes average of all drivetrain motors' rotational values
@@ -162,9 +162,12 @@ void deploy () {
   Brain.Screen.print("Event has occurred");
   chain.resetPosition();
   chain.setVelocity(100, percent);
-  chain.spinFor(-410, degrees, true);
-  chain.stop();
-  chain.spinFor(1000, degrees, false);
+  chain.spinFor(-410, degrees, false);
+}
+
+void retract () {
+  chain.setVelocity(100, percent);
+  chain.spinFor(2000, degrees, false);
 }
 
 //
@@ -547,7 +550,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         Brain.Screen.clearScreen();
         Brain.Screen.setCursor(1, 1); 
         Brain.Screen.print(colour.objectCount);    
-        if (colour.largestObject.centerX > 167 && colour.largestObject.centerX < 187) {
+        if (colour.largestObject.centerX > 171 && colour.largestObject.centerX < 191) {
           break;
         }
         wait(.05, sec);
@@ -575,7 +578,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         Brain.Screen.print(colourb.objectCount);
         Brain.Screen.setCursor(2, 1); 
         Brain.Screen.print(colourb.largestObject.centerX);    
-        if (colourb.largestObject.centerX > 170 && colourb.largestObject.centerX < 180) { 
+        if (colourb.largestObject.centerX > 169 && colourb.largestObject.centerX < 179) { 
           break;
         }
         wait(.05, sec);
@@ -601,7 +604,7 @@ void turncolour (bool way, bool side, int speed, std::string type) {
         Brain.Screen.print(colourb.objectCount);
         Brain.Screen.setCursor(2, 1); 
         Brain.Screen.print(colourb.largestObject.centerX);    
-        if (colourb.largestObject.centerX > 167 && colourb.largestObject.centerX < 187) {
+        if (colourb.largestObject.centerX > 175 && colourb.largestObject.centerX < 185) {
           break;
         }
         wait(.05, sec);
@@ -610,6 +613,48 @@ void turncolour (bool way, bool side, int speed, std::string type) {
   }
   kill();
 }
+void frontult (int speed, bool near, int far) {
+  leftback.setVelocity(speed, percent);
+  rightback.setVelocity(speed, percent);
+  leftfront.setVelocity(speed, percent);
+  rightfront.setVelocity(speed, percent);
+  leftfront.spin(forward);
+  rightfront.spin(forward);
+  leftback.spin(forward);
+  rightback.spin(forward);
+  if (near == false) {
+    while (true) {
+    Brain.Screen.clearScreen();
+    Brain.Screen.setCursor(1, 1); 
+    Brain.Screen.print(distancer.distance(mm));
+    if (distancer.distance(mm) >= far) {
+      break; 
+    }
+    wait(.05, sec);
+    }
+  }
+  if (near == true) {
+    while (true) {
+    Brain.Screen.clearScreen();
+    Brain.Screen.setCursor(1, 1); 
+    Brain.Screen.print(distancer.distance(mm));
+    if (distancer.distance(mm) <= far) {
+      break; 
+    }
+    wait(.05, sec);
+    }
+  }
+  leftfront.stop();
+  rightfront.stop();
+  leftback.stop();
+  rightback.stop();
+  rightfront.setBrake(hold);
+  rightback.setBrake(hold);
+  leftfront.setBrake(hold);
+  leftback.setBrake(hold); 
+  return;
+}
+
 
 //    fwd-back:
 //    28 degrees = 1 inch
@@ -620,8 +665,8 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  int defaultspeed = 80;
-  int secondspeed = 70;
+  int defaultspeed = 75;
+  int secondspeed = 65;
   //Initialize inertial sensor
   inertia.startCalibration();
   wait(2, seconds);
@@ -638,7 +683,8 @@ void autonomous(void) {
   deploy();
   rotate3(true, 97, 35); //96.1417757 degrees precisely
   front(false, 8, 50);
-  turncolour(true, false, 5, "y");
+  rotate2(true, 2, 5);
+  //turncolour(true, false, 5, "y");
   
   //inertial move till collision or move for certian rotations guarantee meeting of the yellow mobile goal
   //front(false, 42, 50);
@@ -650,71 +696,103 @@ void autonomous(void) {
   wait(1, seconds);
   
   //turn towards lower platform
-  rotate2(true, 15, 40);
+  rotate2(true, 10, 40);
   //move till collision with the platform?
   //move forward 57.378 inches
-  front(false, 40, secondspeed);
+  front(false, 50, secondspeed);
   //lift the lift
   lifty(false);
   wait(1, seconds);
   //come to the platform
-  front(false, 20, 60);
+  front(false, 15, 60);
   //turn back
   rotate2(false, 30, 50);
   wait(.5, seconds);
   //strafe to level platform
-  strafe(true, 9, secondspeed);
+  strafe(true, 8, defaultspeed);
   //grab lets go of goal to balance the goal
   grab(true);
+  retract();
   //rotate to align with blue goal
-  rotate3(false, -5, 40);
+  rotate3(false, 0, 40);
   
-  wait(1, seconds);
+  wait(.2, seconds);
   lifty(true); //move back 4 bar down
-  turncolour(true, false, 7, "b"); //turn until blue is seen in the range it should be in
-  front(false, 40, defaultspeed); //go to blue goal; stop before getting there though
+  //turncolour(true, false, 7, "b"); //turn until blue is seen in the range it should be in
+  front(false, 30, defaultspeed); //go to blue goal; stop before getting there though
   frontarm(false); //drop red one from front goal
   //turncolour(false, false, 5, "b");
-  front(false, 7, defaultspeed); // resume trip to blue goal
+  frontgrab(17, 80); // resume trip to blue goal
   
   /////////////////////////////////////////////////////////////////////////////////////////////////////
-  grab(false); //clamp down blue
+  //grab(false); //clamp down blue
   frontarm(true); //pull arm back up as to not block vision sensor
-  rotate2(true, 22, 30); //rotate towards yellow central goal
-  turncolour(true, true, 5, "y"); //finish rotating with help of color
+  rotate2(true, 26, 30); //rotate towards yellow central goal
+  //turncolour(true, true, 5, "y"); //finish rotating with help of color
   frontarm(false); //put arm down for yellow goal
   front(true, 60, 100); //go until yellow goal hits button
-  rotate2(true, 6, 30);
+  rotate2(true, 7, 30);
   front(true, 65, 100);
+  deploy();
   front(false, 35, defaultspeed);
   rotate3(false, -90, 60);
   lifty(false);
   
-  strafe(false, 12, defaultspeed);
-  rotate3(true, -90, 60);
+  strafe(false, 20, 100);
+  //rotate3(true, -90, 60);
+  retract();
+  //front(false, 18, defaultspeed);
 
-  front(false, 12, defaultspeed);
+  leftback.spinFor(reverse, 3, seconds);
+  rightback.spinFor(reverse, 3, seconds);
+  leftfront.spinFor(reverse, 3, seconds);
+  rightfront.spinFor(reverse, 3, seconds);
+
   grab(true);
   /////////////////////////////////////////////////
   front(true, 5, defaultspeed);
   lifty(true);
-  rotate3(true, -20, 50);
+  rotate3(true, -22, 50);
   turncolour(true, true, 5, "r");
   frontarm(false);
 /////////////////////////////////////
 //collide with red goal
-  forwardtillbump(defaultspeed);
-  kill();
-  wait(0.5, seconds);
-  forwardtillbump(defaultspeed);
+  forwardtillbump(70);
+  forwardtillbump(70);
+  front(true, 5, 40);
 
   frontarm(true);
+  deploy();
+  front(false, 5, 50);
 
-  rotate3(true, 40, 60);
+  rotate3(true, 43, 60);
 
-  turncolour(true, false, 5, "y");
+  //turncolour(true, false, 5, "y");
 
-  frontgrab(28, defaultspeed);
+  leftback.setVelocity(6, percent);
+  rightback.setVelocity(6, percent);
+  rightfront.setVelocity(6, percent);
+  leftfront.setVelocity(6, percent);
+  leftback.spin(forward);
+  rightback.spin(reverse);
+  leftfront.spin(forward);
+  rightfront.spin(reverse);
+
+  while (true) {
+    colourb.takeSnapshot(colourb__YELLOWGOAL);
+    Brain.Screen.clearScreen();
+    Brain.Screen.setCursor(1, 1); 
+    Brain.Screen.print(colourb.objectCount);
+    Brain.Screen.setCursor(2, 1); 
+    Brain.Screen.print(colourb.largestObject.centerX);    
+    if (colourb.largestObject.centerX > 177 && colourb.largestObject.centerX < 187) {
+      break;
+    }
+    wait(.05, sec);
+  }  
+  kill();
+
+  frontgrab(38, defaultspeed);
 
   rotate3(true, 90, 70);
 
@@ -722,11 +800,11 @@ void autonomous(void) {
 
   strafe(true, 25, defaultspeed);
 
-  rotate3(false, 90, 50);
+  rotate3(true, 90, 50);
 
-  wait(.5, seconds);
+  wait(.2, seconds);
 
-  front(false, 35, defaultspeed);
+  front(false, 37, defaultspeed);
 
   grab(true);
 
@@ -734,15 +812,11 @@ void autonomous(void) {
 
   lifty(true);
 
-  rotate3(false, 30, 40); 
+  rotate2(false, 50, 40); 
 
   turncolour(false, false, 5, "r");
 
-  front(false, 50, 50);
-
-  //*/
-
-  grab(false);
+  frontgrab(15, 80);
 
   wait(.5, seconds);
 
@@ -752,13 +826,15 @@ void autonomous(void) {
 
   wait(.7, seconds);
 
-  rotate2(true, 90, 50);
+  rotate3(true, 90, 50);
 
-  front(false, 10, 30);
+  front(false, 12, 40);
 
   grab(true);
 
-  front(true, 10, 50);
+  front(true, 2, 50);
+
+  rotate2(false, 90, defaultspeed);
 
 }
 
