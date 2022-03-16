@@ -22,6 +22,7 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+#include <string>
 
 using namespace vex;
 

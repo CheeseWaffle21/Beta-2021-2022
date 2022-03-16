@@ -21,6 +21,7 @@
 // remote          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
+#include <string>
 #include "vex.h"
 #include <cmath>
 #include "math.h"
