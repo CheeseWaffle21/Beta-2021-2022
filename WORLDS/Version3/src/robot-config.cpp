@@ -16,6 +16,7 @@ controller Controller1 = controller(primary);
 motor boostright = motor(PORT20, ratio6_1, true);
 motor boostleft = motor(PORT12, ratio6_1, false);
 digital_out clamp = digital_out(Brain.ThreeWirePort.F);
+digital_out clamp2 = digital_out(Brain.ThreeWirePort.H);
 inertial intertia = inertial(PORT1);
 encoder righttracker = encoder(Brain.ThreeWirePort.A);
 encoder lefttracker = encoder(Brain.ThreeWirePort.C);

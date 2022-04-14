@@ -248,6 +248,12 @@ void usercontrol(void) {
 
     }
 
+    if (Controller1.ButtonY.pressing()) {
+      clamp2.set(true);
+    } else if (Controller1.ButtonA.pressing()) {
+      clamp2.set(false);
+    }
+
     leftspeed = front + rotate;
     rightspeed = front - rotate;
 
@@ -280,3 +286,4 @@ int main() {
     wait(100, msec);
   }
 }
+
