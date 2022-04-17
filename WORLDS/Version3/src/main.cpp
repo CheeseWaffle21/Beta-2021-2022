@@ -85,7 +85,6 @@ void pre_auton(void) {
 
 //Variables for autonomous
 double trackingWheelDiameter = 2.75;
-double trackingWheelRadius = trackingWheelDiameter / 2;
 double trackingDistanceLeft = 3;
 double trackingDistanceRight = 3;
 struct robotpositions {
@@ -103,17 +102,20 @@ int radian (double number) {
 }
 
 int leftposition () {
-  return radian(lefttracker.position(degrees)) * trackingWheelRadius; 
+  return radian(lefttracker.position(degrees)) * trackingWheelDiameter;
 }
 
 int rightposition () {
-  return radian(righttracker.position(degrees)) * trackingWheelRadius;
+  return radian(righttracker.position(degrees)) * trackingWheelDiameter;
 }
 
-int getheading () { 
+int getheading () {
   return ( leftposition() - rightposition() ) / ( trackingDistanceRight + trackingDistanceLeft );
+<<<<<<< HEAD
   
  
+=======
+>>>>>>> parent of e4e437a (Update main.cpp)
 }
 
 robotpositions getlocation () {
