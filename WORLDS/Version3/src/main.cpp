@@ -113,8 +113,7 @@ int rightposition () {
 int getheading () { 
   return ( leftposition() - rightposition() ) / ( trackingDistanceRight + trackingDistanceLeft );
   
- //possibly needs to be revised to:  ( ( (leftposition()*rightposition() ) / ( rightposition() - leftposition() ) ) / ( trackingDistanceRight + trackingDistanceLeft ) )
- //or just ( leftposition()*rightposition() ) / ( ( rightposition() - leftposition() ) * ( trackingDistanceRight + trackingDistanceLeft ) )
+ 
 }
 
 robotpositions getlocation () {
@@ -123,7 +122,7 @@ robotpositions getlocation () {
   double leftvalue = leftposition();
   double radius = ( ( rightvalue * trackingDistanceLeft ) + ( leftvalue * trackingDistanceRight ) ) / ( leftvalue - rightvalue );
   double hypotenuse = sqrt( pow(radius, 2) + pow(radius, 2) - ( 2 * radius * radius * cos(headingangle) ) );
-  double x = hypotenuse * ( sin(90 - ( (180 - headingangle) / 2 ) ) );
+  double x = hypotenuse * ( cos( (180 - headingangle) / 2) );
   double y = hypotenuse * ( sin( (180 - headingangle) / 2) );
   
   robotposition.robotx = x;
