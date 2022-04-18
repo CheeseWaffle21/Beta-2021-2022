@@ -20,7 +20,7 @@
 // clamp                digital_out   F               
 // intertia             inertial      1               
 // righttracker         encoder       A, B            
-// lefttracker          encoder       C, D            
+// lefttracker          encoder       G, H            
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -80,11 +80,11 @@ void pre_auton(void) {
   //Sensor actions
   righttracker.setPosition(0, degrees);
   lefttracker.setPosition(0, degrees);
-  intertia.calibrate();
+  //intertia.calibrate();
 }
 
 //Variables for autonomous
-double trackingWheelDiameter = 2.75;
+double trackingWheelRadius = 2.75 / 2;
 double trackingDistanceLeft = 3;
 double trackingDistanceRight = 3;
 struct robotpositions {
@@ -95,27 +95,21 @@ struct robotpositions {
 robotpositions robotposition;
 
 //Tasks for autonomous
-vex::task printer;
 
-int radian (double number) {
+double radian (double number) {
   return (number / 180) * pi;
 }
 
-int leftposition () {
-  return radian(lefttracker.position(degrees)) * trackingWheelDiameter;
+double leftposition () {
+  return radian(lefttracker.position(degrees)) * trackingWheelRadius;
 }
 
-int rightposition () {
-  return radian(righttracker.position(degrees)) * trackingWheelDiameter;
+double rightposition () {
+  return radian(righttracker.position(degrees)) * trackingWheelRadius;
 }
 
-int getheading () {
+double getheading () {
   return ( leftposition() - rightposition() ) / ( trackingDistanceRight + trackingDistanceLeft );
-<<<<<<< HEAD
-  
- 
-=======
->>>>>>> parent of e4e437a (Update main.cpp)
 }
 
 robotpositions getlocation () {
@@ -124,7 +118,7 @@ robotpositions getlocation () {
   double leftvalue = leftposition();
   double radius = ( ( rightvalue * trackingDistanceLeft ) + ( leftvalue * trackingDistanceRight ) ) / ( leftvalue - rightvalue );
   double hypotenuse = sqrt( pow(radius, 2) + pow(radius, 2) - ( 2 * radius * radius * cos(headingangle) ) );
-  double x = hypotenuse * ( cos( (180 - headingangle) / 2) );
+  double x = hypotenuse * ( sin(90 - ( (180 - headingangle) / 2 ) ) );
   double y = hypotenuse * ( sin( (180 - headingangle) / 2) );
   
   robotposition.robotx = x;
@@ -135,8 +129,8 @@ robotpositions getlocation () {
 }
 
 int printinfo () {
-  int rownumber = 0;
-  int colnumber = 0;
+  int rownumber = 1;
+  int colnumber = 1;
   while (true) { 
     Brain.Screen.clearScreen();
 
@@ -160,9 +154,13 @@ int printinfo () {
     rownumber ++;
     Brain.Screen.print("Heading: %f", robotposition.robotangle);
 
-    wait(20, msec);   
+    wait(20, msec);
+    rownumber = 1;
+    colnumber = 1;   
   }
+  return 0;
 }
+
 
 
 
@@ -180,8 +178,12 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  printer.stop();
-  printer = vex::task(printinfo);
+  task mytask = task(printinfo);
+  while (true) {
+    getlocation();
+    wait(20, msec);
+  }
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -202,7 +204,9 @@ int rightspeed = 0;
 int shared = 0;
 bool sharedmoving = false;
 
+
 void usercontrol(void) {
+  Brain.Screen.print("hello");
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -213,6 +217,8 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
+    //Brain.Screen.print("hello");
+
     front = Controller1.Axis3.position(percent);
     rotate = Controller1.Axis4.position(percent);
 
@@ -238,6 +244,7 @@ void usercontrol(void) {
     } else if (sharedmoving) {
       shared = 0;
     }
+
     
     if (Controller1.ButtonX.pressing()) {
       
@@ -247,12 +254,6 @@ void usercontrol(void) {
 
       clamp.set(false);
 
-    }
-
-    if (Controller1.ButtonY.pressing()) {
-      clamp2.set(true);
-    } else if (Controller1.ButtonA.pressing()) {
-      clamp2.set(false);
     }
 
     leftspeed = front + rotate;
@@ -266,9 +267,11 @@ void usercontrol(void) {
 
     spinall();
 
-    wait(5, msec); // Sleep the task for a short amount of time to
+    wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
+                    
   }
+  
 }
 
 //
@@ -286,5 +289,5 @@ int main() {
   while (true) {
     wait(100, msec);
   }
+  
 }
-
