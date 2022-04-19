@@ -37,6 +37,16 @@ competition Competition;
 
 // define your global instances of motors and other devices here
 
+void setall (int speed, vex::percentUnits units) {
+  frontright.setVelocity(speed, units);
+  frontleft.setVelocity(speed, units);
+  backleft.setVelocity(speed, units);
+  backright.setVelocity(speed, units);
+  boostleft.setVelocity(speed, units);
+  boostright.setVelocity(speed, units);
+
+}
+
 void setallright (int speed, vex::percentUnits units) {
   backright.setVelocity(speed, units);
   frontright.setVelocity(speed, units);
@@ -60,14 +70,34 @@ void clampy() {
 
 }
 
-void spinreverse () {
+void spinallreverse () {
 
   backleft.spin(reverse);
   frontleft.spin(reverse);
   backright.spin(reverse);
-  boostleft
-
+  boostleft.spin(reverse);
+  boostright.spin(reverse);
 }
+
+void turnleft () {
+frontleft.spin(forward);
+backleft.spin(forward);
+boostleft.spin(forward);
+frontright.spin(reverse);
+backright.spin(reverse);
+boostright.spin(reverse);
+}
+
+void turnright () {
+  frontleft.spin(reverse);
+  backleft.spin(reverse);
+  boostleft.spin(reverse);
+  frontright.spin(forward);
+  backright.spin(forward);
+  boostright.spin(forward);
+  }
+
+
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
