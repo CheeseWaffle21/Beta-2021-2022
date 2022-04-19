@@ -60,6 +60,14 @@ void clampy() {
 
 }
 
+void spinreverse () {
+
+  backleft.spin(reverse);
+  frontleft.spin(reverse);
+  backright.spin(reverse);
+  boostleft
+
+}
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
