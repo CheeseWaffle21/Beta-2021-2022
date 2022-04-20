@@ -1,3 +1,18 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         8               
+// backleft             motor         11              
+// backright            motor         9               
+// frontright           motor         10              
+// Controller1          controller                    
+// boostright           motor         20              
+// boostleft            motor         12              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -74,12 +89,13 @@ void spinallreverse () {
 
   backleft.spin(reverse);
   frontleft.spin(reverse);
+  frontright.spin(reverse);
   backright.spin(reverse);
   boostleft.spin(reverse);
   boostright.spin(reverse);
 }
 
-void turnleft () {
+void turnright () {
 frontleft.spin(forward);
 backleft.spin(forward);
 boostleft.spin(forward);
@@ -88,7 +104,7 @@ backright.spin(reverse);
 boostright.spin(reverse);
 }
 
-void turnright () {
+void turnleft () {
   frontleft.spin(reverse);
   backleft.spin(reverse);
   boostleft.spin(reverse);
@@ -286,7 +302,8 @@ void usercontrol(void) {
     
     if (Controller1.ButtonX.pressing()) {
       
-      clamp.set(true);
+  
+      clamp.close();
 
     } else if (Controller1.ButtonB.pressing()) {
 
@@ -303,7 +320,7 @@ void usercontrol(void) {
     setallright(front - rotate, percent);
 
 
-    spinall();
+    
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
