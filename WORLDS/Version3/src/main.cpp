@@ -303,7 +303,7 @@ void usercontrol(void) {
     if (Controller1.ButtonX.pressing()) {
       
   
-      clamp.close();
+      clamp.set(true);
 
     } else if (Controller1.ButtonB.pressing()) {
 
