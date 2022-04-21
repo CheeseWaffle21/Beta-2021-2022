@@ -1,6 +1,126 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         9               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         21              
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         11              
+// backright            motor         10              
+// frontright           motor         21              
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         8               
+// backleft             motor         11              
+// backright            motor         10              
+// frontright           motor         21              
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         8               
+// backleft             motor         11              
+// backright            motor         9               
+// frontright           motor         21              
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         8               
+// backleft             motor         11              
+// backright            motor         9               
+// frontright           motor         10              
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         8               
+// backleft             motor         11              
+// backright            motor         9               
+// frontright           motor         10              
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         12              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // frontleft            motor         8               
 // backleft             motor         11              
 // backright            motor         9               
