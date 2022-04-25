@@ -14,6 +14,9 @@ extern digital_out clamp;
 extern inertial intertia;
 extern encoder righttracker;
 extern encoder lefttracker;
+extern motor arm;
+extern triport expander;
+extern digital_out tilter;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

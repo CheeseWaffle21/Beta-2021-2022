@@ -8,6 +8,141 @@
 // Controller1          controller                    
 // boostright           motor         14              
 // boostleft            motor         13              
+// clamp                digital_out   C               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// Expander2            triport       2               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
 // clamp                digital_out   F               
 // intertia             inertial      1               
 // righttracker         encoder       A, B            
@@ -19,9 +154,9 @@
 // frontleft            motor         7               
 // backleft             motor         6               
 // backright            motor         10              
-// frontright           motor         9               
+// frontright           motor         8               
 // Controller1          controller                    
-// boostright           motor         14              
+// boostright           motor         20              
 // boostleft            motor         13              
 // clamp                digital_out   F               
 // intertia             inertial      1               
@@ -34,10 +169,10 @@
 // frontleft            motor         7               
 // backleft             motor         6               
 // backright            motor         10              
-// frontright           motor         21              
+// frontright           motor         8               
 // Controller1          controller                    
-// boostright           motor         14              
-// boostleft            motor         13              
+// boostright           motor         20              
+// boostleft            motor         12              
 // clamp                digital_out   F               
 // intertia             inertial      1               
 // righttracker         encoder       A, B            
@@ -49,69 +184,9 @@
 // frontleft            motor         7               
 // backleft             motor         11              
 // backright            motor         10              
-// frontright           motor         21              
+// frontright           motor         8               
 // Controller1          controller                    
-// boostright           motor         14              
-// boostleft            motor         13              
-// clamp                digital_out   F               
-// intertia             inertial      1               
-// righttracker         encoder       A, B            
-// lefttracker          encoder       G, H            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontleft            motor         8               
-// backleft             motor         11              
-// backright            motor         10              
-// frontright           motor         21              
-// Controller1          controller                    
-// boostright           motor         14              
-// boostleft            motor         13              
-// clamp                digital_out   F               
-// intertia             inertial      1               
-// righttracker         encoder       A, B            
-// lefttracker          encoder       G, H            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontleft            motor         8               
-// backleft             motor         11              
-// backright            motor         9               
-// frontright           motor         21              
-// Controller1          controller                    
-// boostright           motor         14              
-// boostleft            motor         13              
-// clamp                digital_out   F               
-// intertia             inertial      1               
-// righttracker         encoder       A, B            
-// lefttracker          encoder       G, H            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontleft            motor         8               
-// backleft             motor         11              
-// backright            motor         9               
-// frontright           motor         10              
-// Controller1          controller                    
-// boostright           motor         14              
-// boostleft            motor         13              
-// clamp                digital_out   F               
-// intertia             inertial      1               
-// righttracker         encoder       A, B            
-// lefttracker          encoder       G, H            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontleft            motor         8               
-// backleft             motor         11              
-// backright            motor         9               
-// frontright           motor         10              
-// Controller1          controller                    
-// boostright           motor         14              
+// boostright           motor         20              
 // boostleft            motor         12              
 // clamp                digital_out   F               
 // intertia             inertial      1               
@@ -121,7 +196,22 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// frontleft            motor         8               
+// frontleft            motor         7               
+// backleft             motor         11              
+// backright            motor         9               
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         20              
+// boostleft            motor         12              
+// clamp                digital_out   F               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
 // backleft             motor         11              
 // backright            motor         9               
 // frontright           motor         10              
@@ -133,31 +223,6 @@
 // righttracker         encoder       A, B            
 // lefttracker          encoder       G, H            
 // ---- END VEXCODE CONFIGURED DEVICES ----
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
-/*    Created:      Thu Sep 26 2019                                           */
-/*    Description:  Competition Template                                      */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontleft            motor         8               
-// backleft             motor         11              
-// backright            motor         9               
-// frontright           motor         10              
-// Controller1          controller                    
-// boostright           motor         20              
-// boostleft            motor         12              
-// clamp                digital_out   F               
-// intertia             inertial      1               
-// righttracker         encoder       A, B            
-// lefttracker          encoder       G, H            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 #include "vex.h"
 #include <math.h>
 #include <cmath>
@@ -179,7 +244,6 @@ void setall (int speed, vex::percentUnits units) {
   backright.setVelocity(speed, units);
   boostleft.setVelocity(speed, units);
   boostright.setVelocity(speed, units);
-
 }
 
 void setallright (int speed, vex::percentUnits units) {
@@ -187,11 +251,22 @@ void setallright (int speed, vex::percentUnits units) {
   frontright.setVelocity(speed, units);
   boostright.setVelocity(speed, units);
 }
+
 void setallleft (int speed, vex::percentUnits units) {
   backleft.setVelocity(speed, units);
   frontleft.setVelocity(speed, units);
   boostleft.setVelocity(speed, units);
 }
+
+void kill () {
+  backleft.stop(hold);
+  frontleft.stop(hold);
+  backright.stop(hold);
+  frontright.stop(hold);
+  boostleft.stop(hold);
+  boostright.stop(hold);
+}
+
 void spinall () {
   backleft.spin(forward);
   frontleft.spin(forward);
@@ -200,38 +275,6 @@ void spinall () {
   boostleft.spin(forward);
   boostright.spin(forward);
 }
-
-void clampy() {
-
-}
-
-void spinallreverse () {
-
-  backleft.spin(reverse);
-  frontleft.spin(reverse);
-  frontright.spin(reverse);
-  backright.spin(reverse);
-  boostleft.spin(reverse);
-  boostright.spin(reverse);
-}
-
-void turnright () {
-frontleft.spin(forward);
-backleft.spin(forward);
-boostleft.spin(forward);
-frontright.spin(reverse);
-backright.spin(reverse);
-boostright.spin(reverse);
-}
-
-void turnleft () {
-  frontleft.spin(reverse);
-  backleft.spin(reverse);
-  boostleft.spin(reverse);
-  frontright.spin(forward);
-  backright.spin(forward);
-  boostright.spin(forward);
-  }
 
 
 /*---------------------------------------------------------------------------*/
@@ -252,15 +295,23 @@ void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
 
   //Sensor actions
+  //intertia.calibrate();
   righttracker.setPosition(0, degrees);
   lefttracker.setPosition(0, degrees);
-  //intertia.calibrate();
+  backleft.resetPosition();
+  backright.resetPosition();
+  frontright.resetPosition();
+  frontleft.resetPosition();
+  boostleft.resetPosition();
+  boostright.resetPosition();
+  arm.resetPosition();
 }
 
 //Variables for autonomous
 double trackingWheelRadius = 2.75 / 2;
 double trackingDistanceLeft = 3;
 double trackingDistanceRight = 3;
+
 struct robotpositions {
   double robotx;
   double roboty;
@@ -272,6 +323,10 @@ robotpositions robotposition;
 
 double radian (double number) {
   return (number / 180) * pi;
+}
+
+double degree (double number) {
+  return (number * 180) / pi;
 }
 
 double leftposition () {
@@ -292,7 +347,7 @@ robotpositions getlocation () {
   double leftvalue = leftposition();
   double radius = ( ( rightvalue * trackingDistanceLeft ) + ( leftvalue * trackingDistanceRight ) ) / ( leftvalue - rightvalue );
   double hypotenuse = sqrt( pow(radius, 2) + pow(radius, 2) - ( 2 * radius * radius * cos(headingangle) ) );
-  double x = hypotenuse * ( sin(90 - ( (180 - headingangle) / 2 ) ) );
+  double x = hypotenuse * ( cos( (180 - headingangle) / 2) );
   double y = hypotenuse * ( sin( (180 - headingangle) / 2) );
   
   robotposition.robotx = x;
@@ -326,8 +381,12 @@ int printinfo () {
 
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
-    Brain.Screen.print("Heading: %f", robotposition.robotangle);
+    Brain.Screen.print("Heading radians: %f", robotposition.robotangle);
 
+    Brain.Screen.setCursor(rownumber, colnumber);
+    rownumber ++;
+    Brain.Screen.print("Heading degrees: %f", degree(robotposition.robotangle));
+    
     wait(20, msec);
     rownumber = 1;
     colnumber = 1;   
@@ -335,6 +394,65 @@ int printinfo () {
   return 0;
 }
 
+void gotocoord(double x, double y){  
+  /*This function just does simple moving to coordinates by rotating first, then traveling, 
+  without rotating back to the original orientation.
+
+  This is subject to develop to account for curves, PID, any other fancy thing
+  
+  Heading angle used here is based off of encoders only, though in loose undeveloped theory, 
+  the inertial sensor can be used as well since its angle is just half of the arc angle thing*/
+
+  double dispx = x - robotposition.robotx;
+  double dispy = y - robotposition.roboty;
+
+  double angledestination = (2*(90 - (atan(dispy/dispx)))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
+
+  
+
+//Rotating part
+  if (angledestination - robotposition.robotangle >= 0) {
+
+  while(true) {
+    backleft.setVelocity(30, percent);
+    frontleft.setVelocity(30, percent);
+    backright.setVelocity(-30, percent);
+    frontright.setVelocity(-30, percent);
+
+    if (fabs(robotposition.robotangle) >= fabs(angledestination)) { //Absolute value not needed in this if clause, but it makes copying and pasting to the 'else' clause easier
+      kill();
+      break;
+    }
+  }
+  }
+
+if (angledestination - robotposition.robotangle < 0) {
+  while(true) {
+    backleft.setVelocity(-30, percent);
+    frontleft.setVelocity(-30, percent);
+    backright.setVelocity(30, percent);
+    frontright.setVelocity(30, percent);
+
+    if (fabs(robotposition.robotangle) >= fabs(angledestination)) { //Absolute value not needed in this if clause, but it makes copying and pasting to the 'else' clause easier
+      kill();
+      break;
+    }
+  }
+}
+
+//Moving forward part
+  while(true) {
+    setall(40, percent);
+    spinall();
+
+    if (robotposition.robotx >= dispx || robotposition.roboty >= dispy){
+      kill();
+      break;
+    }
+
+  }
+
+}
 
 
 
@@ -378,20 +496,17 @@ int rightspeed = 0;
 int shared = 0;
 bool sharedmoving = false;
 
+bool armmoving = false;
+
+bool clamppressed = false;
+
+bool tilterpressed = false;
 
 void usercontrol(void) {
-  Brain.Screen.print("hello");
-  // User control code here, inside the loop
+  arm.setVelocity(0, percent);
+  task mytask = task(printinfo);
   while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
-    //Brain.Screen.print("hello");
+    getlocation();
 
     front = Controller1.Axis3.position(percent);
     rotate = Controller1.Axis4.position(percent);
@@ -403,50 +518,62 @@ void usercontrol(void) {
       rotate = 0;
     }
 
-    Brain.Screen.clearScreen();
-    Brain.Screen.setCursor(1, 1);
-    Brain.Screen.print("Axis 3: %d", front);
-    Brain.Screen.setCursor(2, 1);
-    Brain.Screen.print("Axis 1: %d", rotate);
+    Brain.Screen.setCursor(10, 1);
+    Brain.Screen.print("Axis 3 (forwards-back): %d", front);
+    Brain.Screen.setCursor(11, 1);
+    Brain.Screen.print("Axis 1 (turning): %d", rotate);
 
     if (Controller1.ButtonL1.pressing()) {
-      shared = 100;
+      shared = -40;
       sharedmoving = true;
     } else if (Controller1.ButtonL2.pressing()) {
-      shared = -100;
+      shared = 40;
       sharedmoving = true;
     } else if (sharedmoving) {
       shared = 0;
+      sharedmoving = false;
+    }
+    
+    frontright.setVelocity(front - rotate + shared, percent);
+    frontleft.setVelocity(front + rotate + shared, percent);
+    backleft.setVelocity(front + rotate - shared, percent);
+    backright.setVelocity(front - rotate - shared, percent);
+    boostleft.setVelocity(front + rotate, percent);
+    boostright.setVelocity(front - rotate, percent);
+    
+    spinall();
+
+    if (Controller1.ButtonR1.pressing()) {
+      arm.setVelocity(-100, percent);
+      armmoving = true;
+    } else if (Controller1.ButtonR2.pressing()) {
+      arm.setVelocity(100, percent);
+      armmoving = true;
+    } else if (armmoving) {
+      arm.setVelocity(0, percent);
+      arm.setBrake(hold);
+      armmoving = false;
+    }
+    
+    arm.spin(forward);
+    
+    if (Controller1.ButtonX.pressing() && !clamppressed) {
+      clamp.set(!clamp.value());
+      clamppressed = true;
+    } else if (!Controller1.ButtonX.pressing()) {
+      clamppressed = false;
     }
 
-    
-    if (Controller1.ButtonX.pressing()) {
-      
-  
-      clamp.set(true);
-
-    } else if (Controller1.ButtonB.pressing()) {
-
-      clamp.set(false);
-
+    if (Controller1.ButtonA.pressing() && !tilterpressed) {
+      tilter.set(!tilter.value());
+      tilterpressed = true;
+    } else if (!Controller1.ButtonA.pressing()) {
+      tilterpressed = false;
     }
-
-    leftspeed = front + rotate;
-    rightspeed = front - rotate;
-
-
-
-    setallleft(front + rotate, percent);
-    setallright(front - rotate, percent);
-
-
-    
 
     wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
-                    
+                    // prevent wasted resources.                 
   }
-  
 }
 
 //

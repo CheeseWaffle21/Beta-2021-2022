@@ -8,6 +8,7 @@ using code = vision::code;
 brain  Brain;
 
 // VEXcode device constructors
+triport expander = triport(PORT11);
 motor frontleft = motor(PORT7, ratio6_1, false);
 motor backleft = motor(PORT6, ratio6_1, false);
 motor backright = motor(PORT10, ratio6_1, true);
@@ -15,10 +16,12 @@ motor frontright = motor(PORT8, ratio6_1, true);
 controller Controller1 = controller(primary);
 motor boostright = motor(PORT14, ratio6_1, true);
 motor boostleft = motor(PORT13, ratio6_1, false);
-digital_out clamp = digital_out(Brain.ThreeWirePort.F);
+digital_out clamp = digital_out(expander.C);
 inertial intertia = inertial(PORT1);
-encoder righttracker = encoder(Brain.ThreeWirePort.A);
-encoder lefttracker = encoder(Brain.ThreeWirePort.G);
+encoder righttracker = encoder(expander.A);
+encoder lefttracker = encoder(expander.G);
+motor arm = motor(PORT16, ratio36_1, false);
+digital_out tilter = digital_out(expander.D);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
