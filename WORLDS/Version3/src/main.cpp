@@ -32,6 +32,60 @@
 // lefttracker          encoder       G, H            
 // arm                  motor         16              
 // expander             triport       11              
+// tilter               digital_out   D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// intertia             inertial      1               
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -305,6 +359,8 @@ void pre_auton(void) {
   boostleft.resetPosition();
   boostright.resetPosition();
   arm.resetPosition();
+  arm.setBrake(hold);
+  kill();
 }
 
 //Variables for autonomous
@@ -347,8 +403,8 @@ robotpositions getlocation () {
   double leftvalue = leftposition();
   double radius = ( ( rightvalue * trackingDistanceLeft ) + ( leftvalue * trackingDistanceRight ) ) / ( leftvalue - rightvalue );
   double hypotenuse = sqrt( pow(radius, 2) + pow(radius, 2) - ( 2 * radius * radius * cos(headingangle) ) );
-  double x = hypotenuse * ( cos( (180 - headingangle) / 2) );
-  double y = hypotenuse * ( sin( (180 - headingangle) / 2) );
+  double x = hypotenuse * ( cos( (pi - headingangle) / 2) );
+  double y = hypotenuse * ( sin( (pi - headingangle) / 2) );
   
   robotposition.robotx = x;
   robotposition.roboty = y;
@@ -362,6 +418,7 @@ int printinfo () {
   int colnumber = 1;
   while (true) { 
     Brain.Screen.clearScreen();
+    getlocation();
 
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
@@ -381,7 +438,7 @@ int printinfo () {
 
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
-    Brain.Screen.print("Heading radians: %f", robotposition.robotangle);
+    Brain.Screen.print("Heading pi radians: %f", (robotposition.robotangle / pi), "pi");
 
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
@@ -403,10 +460,10 @@ void gotocoord(double x, double y){
   Heading angle used here is based off of encoders only, though in loose undeveloped theory, 
   the inertial sensor can be used as well since its angle is just half of the arc angle thing*/
 
-  double dispx = x - robotposition.robotx;
-  double dispy = y - robotposition.roboty;
+  double dispx = x + robotposition.robotx;
+  double dispy = y + robotposition.roboty;
 
-  double angledestination = (2*(90 - (atan(dispy/dispx)))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
+  double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
 
   
 
@@ -414,12 +471,16 @@ void gotocoord(double x, double y){
   if (angledestination - robotposition.robotangle >= 0) {
 
   while(true) {
-    backleft.setVelocity(30, percent);
-    frontleft.setVelocity(30, percent);
-    backright.setVelocity(-30, percent);
-    frontright.setVelocity(-30, percent);
+    backleft.setVelocity(5, percent);
+    frontleft.setVelocity(5, percent);
+    backright.setVelocity(-5, percent);
+    frontright.setVelocity(-5, percent);
+    boostleft.setVelocity(5, percent); 
+    boostright.setVelocity(-5, percent);
 
-    if (fabs(robotposition.robotangle) >= fabs(angledestination)) { //Absolute value not needed in this if clause, but it makes copying and pasting to the 'else' clause easier
+    spinall();
+
+    if (fabs(robotposition.robotangle) >= fabs(angledestination)) { 
       kill();
       break;
     }
@@ -428,24 +489,26 @@ void gotocoord(double x, double y){
 
 if (angledestination - robotposition.robotangle < 0) {
   while(true) {
-    backleft.setVelocity(-30, percent);
-    frontleft.setVelocity(-30, percent);
-    backright.setVelocity(30, percent);
-    frontright.setVelocity(30, percent);
-
-    if (fabs(robotposition.robotangle) >= fabs(angledestination)) { //Absolute value not needed in this if clause, but it makes copying and pasting to the 'else' clause easier
+    backleft.setVelocity(-10, percent);
+    frontleft.setVelocity(-10, percent);
+    backright.setVelocity(10, percent);
+    frontright.setVelocity(10, percent);
+    boostleft.setVelocity(-10, percent);
+    boostright.setVelocity(10, percent);
+    if (fabs(robotposition.robotangle) >= fabs(angledestination)) {
       kill();
       break;
     }
   }
 }
+  wait(1, seconds);
 
 //Moving forward part
   while(true) {
-    setall(40, percent);
+    setall(10, percent);
     spinall();
 
-    if (robotposition.robotx >= dispx || robotposition.roboty >= dispy){
+    if (x - robotposition.robotx >= x || y - robotposition.roboty >= y){
       kill();
       break;
     }
@@ -471,11 +534,11 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   task mytask = task(printinfo);
-  while (true) {
-    getlocation();
-    wait(20, msec);
-  }
 
+
+  gotocoord(24.0, 24.0);
+  wait(1, sec);
+  gotocoord(48, 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -492,6 +555,7 @@ int front = 0;
 int rotate = 0;
 int leftspeed = 0;
 int rightspeed = 0;
+double switchfactor = 1;
 
 int shared = 0;
 bool sharedmoving = false;
@@ -502,9 +566,12 @@ bool clamppressed = false;
 
 bool tilterpressed = false;
 
+
 void usercontrol(void) {
   arm.setVelocity(0, percent);
   task mytask = task(printinfo);
+  kill();
+  arm.setBrake(hold);
   while (1) {
     getlocation();
 
@@ -523,30 +590,36 @@ void usercontrol(void) {
     Brain.Screen.setCursor(11, 1);
     Brain.Screen.print("Axis 1 (turning): %d", rotate);
 
-    if (Controller1.ButtonL1.pressing()) {
-      shared = -40;
+    if (Controller1.ButtonR1.pressing()) {
+      shared = -100;
       sharedmoving = true;
-    } else if (Controller1.ButtonL2.pressing()) {
-      shared = 40;
+    } else if (Controller1.ButtonR2.pressing()) {
+      shared = 100;
       sharedmoving = true;
     } else if (sharedmoving) {
       shared = 0;
       sharedmoving = false;
     }
+
+    if (Controller1.ButtonDown.pressing()) {
+      switchfactor = .4;
+    } else if (Controller1.ButtonUp.pressing()) {
+      switchfactor = 1;
+    }
     
-    frontright.setVelocity(front - rotate + shared, percent);
-    frontleft.setVelocity(front + rotate + shared, percent);
-    backleft.setVelocity(front + rotate - shared, percent);
-    backright.setVelocity(front - rotate - shared, percent);
-    boostleft.setVelocity(front + rotate, percent);
-    boostright.setVelocity(front - rotate, percent);
+    frontright.setVelocity((front - rotate + shared) * switchfactor, percent);
+    frontleft.setVelocity((front + rotate + shared) * switchfactor, percent);
+    backleft.setVelocity((front + rotate - shared) * switchfactor, percent);
+    backright.setVelocity((front - rotate - shared) * switchfactor, percent);
+    boostleft.setVelocity((front + rotate) * switchfactor, percent);
+    boostright.setVelocity((front - rotate) * switchfactor, percent);
     
     spinall();
 
-    if (Controller1.ButtonR1.pressing()) {
+    if (Controller1.ButtonL1.pressing()) {
       arm.setVelocity(-100, percent);
       armmoving = true;
-    } else if (Controller1.ButtonR2.pressing()) {
+    } else if (Controller1.ButtonL2.pressing()) {
       arm.setVelocity(100, percent);
       armmoving = true;
     } else if (armmoving) {
