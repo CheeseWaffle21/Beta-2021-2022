@@ -17,11 +17,12 @@ controller Controller1 = controller(primary);
 motor boostright = motor(PORT14, ratio6_1, true);
 motor boostleft = motor(PORT13, ratio6_1, false);
 digital_out clamp = digital_out(expander.C);
-inertial intertia = inertial(PORT1);
+inertial intertia = inertial(PORT17);
 encoder righttracker = encoder(expander.A);
 encoder lefttracker = encoder(expander.G);
 motor arm = motor(PORT16, ratio36_1, false);
 digital_out tilter = digital_out(expander.D);
+sonar ultrasonic = sonar(Brain.ThreeWirePort.A);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
