@@ -425,6 +425,8 @@ double trackingWheelRadius = 2.75 / 2;
 double trackingDistanceLeft = 3;
 double trackingDistanceRight = 3;
 
+bool clamppressed = false;
+
 struct robotpositions {
   double robotx;
   double roboty;
@@ -611,6 +613,7 @@ if (angledestination - robotposition.robotangle < 0) {
 
 
 
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -625,7 +628,16 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  task mytask = task(printinfo);
+  setall(50, percent);
+
+  while(true){
+    spinall();
+
+    if(ultrasonic.distance(inches) >= 56) {
+      kill();
+      clamppressed = true;
+    }
+  }
 
 
  // gotocoord(24.0, 24.0);
@@ -654,7 +666,7 @@ bool sharedmoving = false;
 
 bool armmoving = false;
 
-bool clamppressed = false;
+
 
 bool tilterpressed = false;
 
