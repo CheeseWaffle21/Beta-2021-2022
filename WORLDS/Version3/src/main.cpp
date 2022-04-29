@@ -9,6 +9,25 @@
 // boostright           motor         14              
 // boostleft            motor         13              
 // clamp                digital_out   C               
+// intertia             inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
 // intertia             inertial      1               
 // righttracker         encoder       A, B            
 // lefttracker          encoder       G, H            
@@ -515,21 +534,25 @@ void gotocoord(double x, double y){
  while(true) {
 		{
 			//double setpoint = nMotorEncoder[righty];
-      double kp = 0;
+      double kp = 0.8;
+      double ki = 0;
+      double kd = 0;
 			double error = angledestination - robotposition.robotangle;
 			double integral = integral + error;
 			if (error <= 0)
 			{
 				integral = 0;
 			}
-			if (error <= -1)
-			{
-				integral = 0;
-			}
-			derivative = error-prevError;
-			prevError = error;
-			power = error*1 + integral*1 + derivative*1; //These ones can be changed to better preformance
-			wait1Msec(5);
+
+    	double prevError = error;
+			double derivative = error-prevError;
+		
+			double pow = error*kp + integral*ki + derivative*kd; //These ones can be changed to better preformance
+			 setall(69*pow, percent);
+       spinall();
+      if (error >= 0){
+        
+      }
 		}
 	}
  /*   backleft.setVelocity(5, percent);
