@@ -28,6 +28,25 @@
 // boostright           motor         14              
 // boostleft            motor         13              
 // clamp                digital_out   C               
+// intertia             inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
 // intertia             inertial      1               
 // righttracker         encoder       A, B            
 // lefttracker          encoder       G, H            
@@ -629,14 +648,16 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   setall(50, percent);
+  clamp.set(true);
 
   while(true){
     spinall();
 
-    if(ultrasonic.distance(inches) >= 56) {
+    if(ultrasonic.distance(mm) >= 1220) {
       kill();
-      clamppressed = true;
-    }
+      clamp.set(false);
+      break;
+    }//oui oui baguette says that this is wrong//
   }
 
 

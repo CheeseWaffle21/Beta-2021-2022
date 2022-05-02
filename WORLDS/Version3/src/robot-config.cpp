@@ -23,6 +23,7 @@ encoder lefttracker = encoder(expander.G);
 motor arm = motor(PORT16, ratio36_1, false);
 digital_out tilter = digital_out(expander.D);
 sonar ultrasonic = sonar(Brain.ThreeWirePort.A);
+motor chain = motor(PORT18, ratio6_1, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

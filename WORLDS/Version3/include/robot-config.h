@@ -18,6 +18,7 @@ extern motor arm;
 extern triport expander;
 extern digital_out tilter;
 extern sonar ultrasonic;
+extern motor chain;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

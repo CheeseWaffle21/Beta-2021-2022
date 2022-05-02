@@ -16,6 +16,46 @@
 // expander             triport       11              
 // tilter               digital_out   D               
 // ultrasonic           sonar         A, B            
+// chain                motor         18              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// intertia             inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// chain                motor         19              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// intertia             inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -335,8 +375,10 @@
 // lefttracker          encoder       G, H            
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
-#include <math.h>
+#include "math.h"
 #include <cmath>
+#include <algorithm>
+
 
 
 double pi = 3.14159;
@@ -505,14 +547,6 @@ int printinfo () {
     rownumber ++;
     Brain.Screen.print("Distance: %f", ultrasonic.distance(inches));
 
-    Brain.Screen.setCursor(rownumber, colnumber);
-    rownumber ++;
-    Brain.Screen.print("Mission: the destruction of any and all Chinese");
-    
-    Brain.Screen.setCursor(rownumber, colnumber);
-    rownumber ++;
-    Brain.Screen.print("communists.");
-
     wait(20, msec);
     rownumber = 1;
     colnumber = 1;   
@@ -520,7 +554,67 @@ int printinfo () {
   return 0;
 }
 
-void gotocoord(double x, double y){  
+void turnto (int target) {
+  //turnto is a working PID that turns the robot the shortest distance given ANY degrees. 
+  //It aviods multiple revolutions and will turn in ABSOLUTE coordinates.
+  double kp = .2; //tune
+  double ki = .19; //tune
+  double threshold = 2; //tune
+  double accelerator = .7; //tune
+
+  double previousspeed = 0;
+  double previouserror = 0;
+  double totalerror = 0;
+  double error;
+  int speed;
+
+  while (true) {
+    error = (target - lround(fmod(degree(robotposition.robotangle), 360)) + 540) % 360 - 180;
+
+    if (fabs(error) < threshold) {
+      kill();
+      break;
+      return;
+    }
+
+    totalerror = error + previouserror;
+
+    speed = error * kp + totalerror * ki;
+
+    if (speed - previousspeed > accelerator) {
+      speed = previousspeed + accelerator;
+    }
+
+    setallleft(speed, percent);
+    setallright(-speed, percent);
+
+    spinall();
+
+    speed = previousspeed;
+    error = previouserror;
+
+    wait(20, msec);    
+  }
+  kill();
+  return;  
+}
+
+void moveto (double target) {
+  //turnto is a working PID that turns the robot the shortest distance given ANY degrees. 
+  //It aviods multiple revolutions and will turn in ABSOLUTE coordinates.
+  double kp = .2; //tune
+  double ki = .18; //tune
+  double threshold = .5; //tune
+  double accelerator = .7; //tune
+
+  double previousspeed = 0;
+  double previouserror = 0;
+  double totalerror = 0;
+  double error;
+  int speed;
+}
+
+void gotocoord(double x, double y, double face){  
   /*This function just does simple moving to coordinates by rotating first, then traveling, 
   without rotating back to the original orientation.
 
@@ -529,84 +623,10 @@ void gotocoord(double x, double y){
   Heading angle used here is based off of encoders only, though in loose undeveloped theory, 
   the inertial sensor can be used as well since its angle is just half of the arc angle thing*/
 
-  double dispx = x + robotposition.robotx;
-  double dispy = y + robotposition.roboty;
+  //double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
 
-  double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
-
-  
-
-//Rotating part
-  if (angledestination - robotposition.robotangle >= 0) {
-
- while(true) {
-		{
-			//double setpoint = nMotorEncoder[righty];
-      double kp = 0.8;
-      double ki = 0;
-      double kd = 0;
-			double error = angledestination - robotposition.robotangle;
-			double integral = integral + error;
-			if (error <= 0)
-			{
-				integral = 0;
-			}
-
-    	double prevError = error;
-			double derivative = error-prevError;
-		
-			double pow = error*kp + integral*ki + derivative*kd; //These ones can be changed to better preformance
-			 setall(69*pow, percent);
-       spinall();
-      if (error >= 0){
-        
-      }
-		}
-	}
- /*   backleft.setVelocity(5, percent);
-    frontleft.setVelocity(5, percent);
-    backright.setVelocity(-5, percent);
-    frontright.setVelocity(-5, percent);
-    boostleft.setVelocity(5, percent); 
-    boostright.setVelocity(-5, percent);
-
-    spinall();
-
-    if (fabs(robotposition.robotangle) >= fabs(angledestination)) { 
-      kill();
-      break;
-    }
-  }*/
-  }
-
-if (angledestination - robotposition.robotangle < 0) {
-  while(true) {
-    backleft.setVelocity(-10, percent);
-    frontleft.setVelocity(-10, percent);
-    backright.setVelocity(10, percent);
-    frontright.setVelocity(10, percent);
-    boostleft.setVelocity(-10, percent);
-    boostright.setVelocity(10, percent);
-    if (fabs(robotposition.robotangle) >= fabs(angledestination)) {
-      kill();
-      break;
-    }
-  }
-}
-  wait(1, seconds);
-
-//Moving forward part
-  while(true) {
-    setall(10, percent);
-    spinall();
-
-    if (x - robotposition.robotx >= x || y - robotposition.roboty >= y){
-      kill();
-      break;
-    }
-
-  }
-
+  turnto(face);
+  //DONT USE YET: moveto( sqrt( (x * x) + (y * y) ) );
 }
 
 
@@ -627,7 +647,8 @@ void autonomous(void) {
   // ..........................................................................
   task mytask = task(printinfo);
 
-
+  wait (10, seconds);
+  turnto(180);
  // gotocoord(24.0, 24.0);
   //wait(1, sec);
   //gotocoord(48, 0);
@@ -648,6 +669,7 @@ int rotate = 0;
 int leftspeed = 0;
 int rightspeed = 0;
 double switchfactor = 1;
+double reductionfactor = 1;
 
 int shared = 0;
 bool sharedmoving = false;
@@ -657,6 +679,9 @@ bool armmoving = false;
 bool clamppressed = false;
 
 bool tilterpressed = false;
+
+bool chainpressed = false;
+bool chainmoving = false;
 
 
 void usercontrol(void) {
@@ -683,10 +708,10 @@ void usercontrol(void) {
     Brain.Screen.print("Axis 1 (turning): %d", rotate);
 
     if (Controller1.ButtonL1.pressing()) {
-      shared = -100;
+      shared = -49;
       sharedmoving = true;
     } else if (Controller1.ButtonL2.pressing()) {
-      shared = 100;
+      shared = 49;
       sharedmoving = true;
     } else if (sharedmoving) {
       shared = 0;
@@ -698,13 +723,17 @@ void usercontrol(void) {
     } else if (Controller1.ButtonUp.pressing()) {
       switchfactor = 1;
     }
+
+    //reductionfactor = std::max(std::max(abs(front - rotate + shared), abs(front + rotate + shared)), std::max(abs(front + rotate - shared), (front - rotate - shared))) / 100;
+
     
-    frontright.setVelocity((front - rotate + shared) * switchfactor, percent);
-    frontleft.setVelocity((front + rotate + shared) * switchfactor, percent);
-    backleft.setVelocity((front + rotate - shared) * switchfactor, percent);
-    backright.setVelocity((front - rotate - shared) * switchfactor, percent);
-    boostleft.setVelocity((front + rotate) * switchfactor, percent);
-    boostright.setVelocity((front - rotate) * switchfactor, percent);
+    
+    frontright.setVelocity((front - rotate + shared) * switchfactor * reductionfactor, percent);
+    frontleft.setVelocity((front + rotate + shared) * switchfactor * reductionfactor, percent);
+    backleft.setVelocity((front + rotate - shared) * switchfactor * reductionfactor, percent);
+    backright.setVelocity((front - rotate - shared) * switchfactor * reductionfactor, percent);
+    boostleft.setVelocity((front + rotate) * switchfactor * reductionfactor, percent);
+    boostright.setVelocity((front - rotate) * switchfactor * reductionfactor, percent);
     
     spinall();
 
@@ -736,8 +765,25 @@ void usercontrol(void) {
       tilterpressed = false;
     }
 
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.                 
+    if (Controller1.ButtonB.pressing() && !chainpressed) {
+      chain.setVelocity(350, rpm);
+      chain.spin(forward);
+      chainpressed = true;
+      if (chainmoving == false) {
+        chain.setVelocity(100, percent);
+        chain.spin(forward);
+        chainmoving = true;
+      } else if (chainmoving == true) {
+        chain.setVelocity(0, percent);
+        chainmoving = false;
+      }
+    } else if (!Controller1.ButtonB.pressing()) {
+      chainpressed = false;
+    }
+
+    
+
+    wait(20, msec);                  
   }
 }
 
