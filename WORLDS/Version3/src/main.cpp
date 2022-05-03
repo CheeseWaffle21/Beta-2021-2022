@@ -370,8 +370,15 @@ void autonomous(void) {
   tilter.set(false);
   turnto(90);
   
+  moveto(-12, 12)
+  tilter.set(true);
   
+  chain.set(100, percent);
+  chain.spin(forward);
   
+  turnto(180);
+  
+  moveto(-12, 48);  
 }
 
 /*---------------------------------------------------------------------------*/
