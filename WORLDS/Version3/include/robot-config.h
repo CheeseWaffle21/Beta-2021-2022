@@ -11,7 +11,7 @@ extern controller Controller1;
 extern motor boostright;
 extern motor boostleft;
 extern digital_out clamp;
-extern inertial intertia;
+extern inertial inertia;
 extern encoder righttracker;
 extern encoder lefttracker;
 extern motor arm;

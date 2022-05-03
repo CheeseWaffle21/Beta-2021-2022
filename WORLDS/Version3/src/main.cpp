@@ -9,6 +9,26 @@
 // boostright           motor         14              
 // boostleft            motor         13              
 // clamp                digital_out   C               
+// inertia              inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// chain                motor         18              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
 // intertia             inertial      17              
 // righttracker         encoder       A, B            
 // lefttracker          encoder       G, H            
@@ -420,6 +440,15 @@ void kill () {
   boostright.stop(hold);
 }
 
+void setcoast () {
+  backleft.setBrake(vex::coast);
+  frontleft.setBrake(vex::coast);
+  backright.setBrake(vex::coast);
+  frontright.setBrake(vex::coast);
+  boostleft.setBrake(vex::coast);
+  boostright.setBrake(vex::coast);
+}
+
 void spinall () {
   backleft.spin(forward);
   frontleft.spin(forward);
@@ -547,6 +576,10 @@ int printinfo () {
     rownumber ++;
     Brain.Screen.print("Distance: %f", ultrasonic.distance(inches));
 
+    Brain.Screen.setCursor(rownumber, colnumber);
+    rownumber ++;
+    Brain.Screen.print("Inertial: %f", inertia.rotation());
+
     wait(20, msec);
     rownumber = 1;
     colnumber = 1;   
@@ -555,12 +588,12 @@ int printinfo () {
 }
 
 void turnto (int target) {
-  //turnto is a working PID that turns the robot the shortest distance given ANY degrees. 
+  //turnto() is a working PID that turns the robot the shortest distance given ANY degrees. 
   //It aviods multiple revolutions and will turn in ABSOLUTE coordinates.
-  double kp = .2; //tune
-  double ki = .19; //tune
+  double kp = .25; //tune
+  double ki = .055; //tune
   double threshold = 2; //tune
-  double accelerator = .7; //tune
+  double accelerator = 18; //tune
 
   double previousspeed = 0;
   double previouserror = 0;
@@ -569,7 +602,7 @@ void turnto (int target) {
   int speed;
 
   while (true) {
-    error = (target - lround(fmod(degree(robotposition.robotangle), 360)) + 540) % 360 - 180;
+    error = (target - lround(fmod(degree((0 + radian(inertia.rotation())) / 1), 360)) + 540) % 360 - 180;
 
     if (fabs(error) < threshold) {
       kill();
@@ -591,7 +624,7 @@ void turnto (int target) {
     spinall();
 
     speed = previousspeed;
-    error = previouserror;
+    previouserror = error;
 
     wait(20, msec);    
   }
@@ -599,22 +632,69 @@ void turnto (int target) {
   return;  
 }
 
-void moveto (double target) {
+void moveto (double x, double y) {
   //turnto is a working PID that turns the robot the shortest distance given ANY degrees. 
   //It aviods multiple revolutions and will turn in ABSOLUTE coordinates.
-  double kp = .2; //tune
-  double ki = .18; //tune
-  double threshold = .5; //tune
-  double accelerator = .7; //tune
-
+  double kp = .9; //tune
+  double ki = .4; //tune
+  double threshold = 1; //tune
+  double accelerator = 50; //tune
   double previousspeed = 0;
   double previouserror = 0;
   double totalerror = 0;
   double error;
+  double errorx;
+  double errory;
   int speed;
+
+  double initialx = robotposition.robotx;
+  double initialy = robotposition.roboty;
+
+//  double targetdistance = sqrt( pow(x - initialx, 2) + pow(y - initialy, 2));
+
+  while (true) {
+    //error = targetdistance - (sqrt( pow(robotposition.robotx - initialx, 2) + pow(robotposition.roboty - initialy, 2)));
+    errorx = x - (robotposition.robotx - initialx);
+    errory = y - (robotposition.roboty - initialy);
+
+    if (fabs(errorx) < threshold) {
+      kill();
+      break;
+      return;
+    }
+
+    if (fabs(errory) < threshold) {
+      kill();
+      break;
+      return;
+    }
+
+    error = (errorx + errory)/2;
+    totalerror = error + previouserror;
+
+    speed = error * kp + totalerror * ki;
+
+    if (speed - previousspeed > accelerator) {
+      speed = previousspeed + accelerator;
+    }
+
+    setallleft(speed, percent);
+    setallright(speed, percent);
+
+    spinall();
+
+    speed = previousspeed;
+    previouserror = error;
+
+    wait(20, msec);    
+  }
+  kill();
+  return;
 }
 
-void gotocoord(double x, double y, double face){  
+double angledestination;
+
+void gotocoord(double x, double y){  
   /*This function just does simple moving to coordinates by rotating first, then traveling, 
   without rotating back to the original orientation.
 
@@ -625,8 +705,20 @@ void gotocoord(double x, double y, double face){
 
   //double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
 
-  turnto(face);
-  //DONT USE YET: moveto( sqrt( (x * x) + (y * y) ) );
+ double deltax = x - robotposition.robotx;
+  double deltay = y - robotposition.roboty;
+
+ // double angledestination = ((atan2(deltax, deltay)) - fmod(robotposition.robotangle, 360));
+
+ if (deltay < 0) {
+   angledestination = ((atan2(deltay, deltax)));
+ } else {
+   angledestination = ((atan2(deltax, deltay)));
+ }
+
+  turnto(degree((angledestination)));
+
+  moveto(x, y);
 }
 
 
@@ -647,8 +739,28 @@ void autonomous(void) {
   // ..........................................................................
   task mytask = task(printinfo);
 
-  wait (10, seconds);
-  turnto(180);
+ // gotocoord(24, 24);
+
+ /*turnto(45);
+ wait(1, seconds);
+ turnto(135);
+ wait(1, seconds);
+ turnto(180);
+ wait(1, seconds);
+ turnto(350);
+ 
+*/
+
+ /*gotocoord(48, 48);
+ turnto(0);*/
+ setcoast();
+
+
+ 
+
+// gotocoord(1,1);
+
+
  // gotocoord(24.0, 24.0);
   //wait(1, sec);
   //gotocoord(48, 0);
@@ -707,10 +819,10 @@ void usercontrol(void) {
     Brain.Screen.setCursor(11, 1);
     Brain.Screen.print("Axis 1 (turning): %d", rotate);
 
-    if (Controller1.ButtonL1.pressing()) {
+    if (Controller1.ButtonR1.pressing()) {
       shared = -49;
       sharedmoving = true;
-    } else if (Controller1.ButtonL2.pressing()) {
+    } else if (Controller1.ButtonR2.pressing()) {
       shared = 49;
       sharedmoving = true;
     } else if (sharedmoving) {
@@ -737,10 +849,10 @@ void usercontrol(void) {
     
     spinall();
 
-    if (Controller1.ButtonR1.pressing()) {
+    if (Controller1.ButtonL1.pressing()) {
       arm.setVelocity(-100, percent);
       armmoving = true;
-    } else if (Controller1.ButtonR2.pressing()) {
+    } else if (Controller1.ButtonL2.pressing()) {
       arm.setVelocity(100, percent);
       armmoving = true;
     } else if (armmoving) {
