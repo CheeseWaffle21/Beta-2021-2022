@@ -343,6 +343,35 @@ void autonomous(void) {
   // ..........................................................................
   task mytask = task(printinfo);
   
+  setall(100, percent)l
+  spinall();
+  clamp.set(false);
+  
+  while (true) {
+    if (ultrasonic.distance(mm) >= 1220) {
+      kill();
+      clamp.set(false);
+      break;
+    }
+   wait (10, msec);
+  }
+  
+  setall(-100, percent);
+  spinall();
+  
+  while (true) {
+    if (ultrasonic.distance(mm) <= 200) {
+      setcoast();
+      break;
+    }
+   wait (10, msec);
+  }
+  
+  tilter.set(false);
+  turnto(90);
+  
+  
+  
 }
 
 /*---------------------------------------------------------------------------*/
