@@ -19,6 +19,7 @@ extern triport expander;
 extern digital_out tilter;
 extern sonar ultrasonic;
 extern motor chain;
+extern limit LimitSwitchC;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

@@ -1,3 +1,45 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// inertia              inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// chain                motor         18              
+// LimitSwitchC         limit         C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// inertia              inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// chain                motor         18              
+// LimitSwitchF         limit         F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 #include "math.h"
 #include <cmath>
@@ -178,7 +220,7 @@ int printinfo () {
 
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
-    Brain.Screen.print("Distance: %f", ultrasonic.distance(inches));
+    Brain.Screen.print("Distance: %f", ultrasonic.distance(mm));
 
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
@@ -195,7 +237,7 @@ void turnto (int target) {
   //turnto() is a working PID that turns the robot the shortest distance given ANY degrees. 
   //It aviods multiple revolutions and will turn in ABSOLUTE coordinates.
   double kp = .25; //tune
-  double ki = .055; //tune
+  double ki = .058; //tune
   double threshold = 2; //tune
   double accelerator = 18; //tune
 
@@ -343,42 +385,54 @@ void autonomous(void) {
   // ..........................................................................
   task mytask = task(printinfo);
   
-  setall(100, percent)l
+  setall(100, percent);
   spinall();
-  clamp.set(false);
+  clamp.set(true);
   
   while (true) {
-    if (ultrasonic.distance(mm) >= 1220) {
+    if (LimitSwitchC.pressing() == true || ultrasonic.distance(mm) >= 1300) {
       kill();
       clamp.set(false);
       break;
     }
-   wait (10, msec);
+   wait (20, msec);
   }
+
+  turnto(180);
+
+  setall(50, percent);
+
+  double initialleft = leftposition();
+
+  while (true) {
+    if (leftposition() - initialleft >= 27) {
+      setcoast();
+      break;
+      return;
+    }
+    wait(20, msec);
+  }
+
+  tilter.set(true);
+  turnto(90);
   
-  setall(-100, percent);
+  setall(-40, percent);
   spinall();
   
   while (true) {
-    if (ultrasonic.distance(mm) <= 200) {
+    if (ultrasonic.distance(mm) <= 470) {
       setcoast();
+      tilter.set(false);
       break;
     }
-   wait (10, msec);
+   wait (20, msec);
   }
   
-  tilter.set(false);
-  turnto(90);
   
-  moveto(-12, 12)
-  tilter.set(true);
-  
-  chain.set(100, percent);
+  chain.setVelocity(100, percent);
   chain.spin(forward);
   
-  turnto(180);
-  
-  moveto(-12, 48);  
+  turnto(0);  
 }
 
 /*---------------------------------------------------------------------------*/
