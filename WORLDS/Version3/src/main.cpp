@@ -236,8 +236,8 @@ int printinfo () {
 void turnto (int target) {
   //turnto() is a working PID that turns the robot the shortest distance given ANY degrees. 
   //It aviods multiple revolutions and will turn in ABSOLUTE coordinates.
-  double kp = .25; //tune
-  double ki = .058; //tune
+  double kp = .4; //tune
+  double ki = .06; //tune
   double threshold = 2; //tune
   double accelerator = 18; //tune
 
@@ -383,6 +383,7 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  ///*
   task mytask = task(printinfo);
   
   setall(100, percent);
@@ -400,9 +401,11 @@ void autonomous(void) {
 
   turnto(180);
 
-  setall(50, percent);
+  setall(80, percent);
 
   double initialleft = leftposition();
+
+  spinall();
 
   while (true) {
     if (leftposition() - initialleft >= 27) {
@@ -414,25 +417,51 @@ void autonomous(void) {
   }
 
   tilter.set(true);
-  turnto(90);
+  turnto(-90);
   
-  setall(-40, percent);
+  setall(-80, percent);
   spinall();
   
+  initialleft = leftposition();
+
+  spinall();
+
   while (true) {
-    if (ultrasonic.distance(mm) <= 470) {
+    if (initialleft - leftposition() >= 10) {
       setcoast();
       tilter.set(false);
       break;
+      return;
     }
-   wait (20, msec);
+    wait(20, msec);
   }
-  
-  
+  //*/
+  setall(100, percent);
+
+  backleft.spinFor(forward, 400, degrees, false);
+  backright.spinFor(forward, 400, degrees, false);
+  frontleft.spinFor(reverse, 400, degrees, false);
+  frontright.spinFor(reverse, 400, degrees, false);
+  ///*
   chain.setVelocity(100, percent);
   chain.spin(forward);
   
   turnto(0);  
+
+  initialleft = leftposition();
+  setall(80, percent);
+  spinall();
+
+  while (true) {
+    if (leftposition() - initialleft >= 12) {
+      setcoast();
+      break;
+      return;
+    }
+    wait(20, msec);
+    
+  }  
+  //*/
 }
 
 /*---------------------------------------------------------------------------*/
