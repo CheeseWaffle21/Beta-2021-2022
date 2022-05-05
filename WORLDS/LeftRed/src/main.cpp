@@ -1,4 +1,3 @@
-
 #include "vex.h"
 #include "math.h"
 #include <cmath>
@@ -300,10 +299,11 @@ void moveto (double x, double y) {
   return;
 }
 
-void movetofast(int target) {
-setallleft(90, percent);
-setallright(90, percent);
+void movetofast(int speed, int target, bool ultorencoder) {
+setallleft(speed, percent);
+setallright(speed, percent);
 
+if (ultorencoder == false){
 while (true) {
 spinall();
 if (ultrasonic.distance(mm) >= target) {
@@ -312,7 +312,18 @@ if (ultrasonic.distance(mm) >= target) {
     }
   }
 }
+if (ultorencoder == true) {
+  double initialtrackerdistance = leftposition();
+    while (true) {
+    spinall();
+     if (leftposition() - initialtrackerdistance >= fabs(target/25.4)) {
+    kill();
+    break;
+  }
+}
+}
 
+}
 double angledestination;
 
 void gotocoord(double x, double y){  
@@ -338,7 +349,7 @@ void gotocoord(double x, double y){
  }
 
   turnto(degree((angledestination)));
-  movetofast(25.4*sqrt((deltax*deltax) + (deltay*deltay)));
+  //movetofast(25.4*sqrt((deltax*deltax) + (deltay*deltay)));
 
   
 
@@ -364,7 +375,17 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   task mytask = task(printinfo);
-clamp.set(true);
+
+  clamp.set(true);
+  tilter.set(true);
+
+movetofast(40, 1220, 0);
+clamp.set(false);
+turnto(180);
+movetofast(40, 890 , 1);
+turnto()
+
+/*clamp.set(true);
 tilter.set(true);
  // gotocoord(24, 24);
   gotocoord(24, 60);
@@ -379,7 +400,7 @@ tilter.set(true);
     kill();
     tilter.set(false);
   }
-
+*/
  /*turnto(45);
  wait(1, seconds);
  turnto(135);
