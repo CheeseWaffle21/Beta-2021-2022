@@ -431,8 +431,76 @@ shared = -49;
 sharedmoving = true;
 */
 
-  
-  
+
+setall(100, percent);
+spinall();
+clamp.set(true);
+
+while (true) {
+  if (LimitSwitchC.pressing() == true || ultrasonic.distance(mm) >= 1400) {
+    setcoast();
+    clamp.set(false);
+    break;
+  }
+  wait (20, msec);
+}
+
+turnto(135);
+
+setall(80, percent);
+
+double initialleft = leftposition();
+
+spinall();
+
+while (true) {
+  if (leftposition() - initialleft >= 35 || inertia.acceleration(yaxis) > .2) {
+    setcoast();
+    break;
+    return;
+  }
+  wait(20, msec);
+}
+
+tilter.set(true);
+turnto(90);
+
+setall(-80, percent);
+spinall();
+
+initialleft = leftposition();
+
+spinall();
+
+while (true) {
+  if (initialleft - leftposition() >= 15) {
+    setcoast();
+    tilter.set(false);
+    break;
+    return;
+  }
+  wait(20, msec);
+}
+//
+arm.spinFor(forward, 300, degrees);
+
+setall(100, percent);
+
+backleft.spinFor(forward, 400, degrees, false);
+backright.spinFor(forward, 400, degrees, false);
+frontleft.spinFor(reverse, 400, degrees, false);
+frontright.spinFor(reverse, 400, degrees, false);
+///*
+chain.setVelocity(100, percent);
+chain.spin(forward);
+
+
+
+
+
+
+/*  
+////////////////////////
   setall(100, percent);
   spinall();
   clamp.set(true);
@@ -510,7 +578,7 @@ sharedmoving = true;
     wait(20, msec);
     
   }  
-  //*/
+  */
 }
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
