@@ -44,10 +44,13 @@
 #include "math.h"
 #include <cmath>
 #include <algorithm>
-
+#include <iostream>;
 
 
 double pi = 3.14159;
+
+
+
 
 using namespace vex;
 
@@ -55,6 +58,9 @@ using namespace vex;
 competition Competition;
 
 // define your global instances of motors and other devices here
+
+int shared = 0;
+bool sharedmoving = false;
 
 void setall (int speed, vex::percentUnits units) {
   frontright.setVelocity(speed, units);
@@ -145,6 +151,7 @@ double trackingDistanceRight = 3;
 struct robotpositions {
   double robotx;
   double roboty;
+  double robotdistance;
   double robotangle;
 };
 robotpositions robotposition;
@@ -177,15 +184,24 @@ robotpositions getlocation () {
   double leftvalue = leftposition();
   double radius = ( ( rightvalue * trackingDistanceLeft ) + ( leftvalue * trackingDistanceRight ) ) / ( leftvalue - rightvalue );
   double hypotenuse = sqrt( pow(radius, 2) + pow(radius, 2) - ( 2 * radius * radius * cos(headingangle) ) );
-  double x = hypotenuse * ( cos( (pi - headingangle) / 2) );
-  double y = hypotenuse * ( sin( (pi - headingangle) / 2) );
+  //double x = hypotenuse * ( cos( (pi - headingangle) / 2) );
+  //double y = hypotenuse * ( sin( (pi - headingangle) / 2) );
   
+  double x = hypotenuse * sin(headingangle);
+  double y = hypotenuse * cos(headingangle);
+
   robotposition.robotx = x;
   robotposition.roboty = y;
+  robotposition.robotdistance = hypotenuse;
   robotposition.robotangle = headingangle;
 
   return robotposition;
 }
+
+  double deltaheading = 0;
+  double dtheta = 0;
+  double deltahyp = 0;
+
 
 int printinfo () {
   int rownumber = 1;
@@ -225,6 +241,8 @@ int printinfo () {
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
     Brain.Screen.print("Inertial: %f", inertia.rotation());
+
+      printf("test currentx %f\n", robotposition.robotx);
 
     wait(20, msec);
     rownumber = 1;
@@ -269,7 +287,7 @@ void turnto (int target) {
 
     spinall();
 
-    speed = previousspeed;
+    previousspeed = speed;
     previouserror = error;
 
     wait(20, msec);    
@@ -278,7 +296,7 @@ void turnto (int target) {
   return;  
 }
 
-void moveto (double x, double y) {
+void moveto (double dist) {
   //turnto is a working PID that turns the robot the shortest distance given ANY degrees. 
   //It aviods multiple revolutions and will turn in ABSOLUTE coordinates.
   double kp = .9; //tune
@@ -289,33 +307,25 @@ void moveto (double x, double y) {
   double previouserror = 0;
   double totalerror = 0;
   double error;
-  double errorx;
-  double errory;
   int speed;
 
-  double initialx = robotposition.robotx;
-  double initialy = robotposition.roboty;
+  double initialdist = robotposition.robotdistance;
+ 
 
 //  double targetdistance = sqrt( pow(x - initialx, 2) + pow(y - initialy, 2));
 
   while (true) {
     //error = targetdistance - (sqrt( pow(robotposition.robotx - initialx, 2) + pow(robotposition.roboty - initialy, 2)));
-    errorx = x - (robotposition.robotx - initialx);
-    errory = y - (robotposition.roboty - initialy);
+    error = dist - (robotposition.robotdistance - initialdist);
+   
 
-    if (fabs(errorx) < threshold) {
+    if (fabs(error) < threshold) {
       kill();
       break;
       return;
     }
 
-    if (fabs(errory) < threshold) {
-      kill();
-      break;
-      return;
-    }
 
-    error = (errorx + errory)/2;
     totalerror = error + previouserror;
 
     speed = error * kp + totalerror * ki;
@@ -329,7 +339,7 @@ void moveto (double x, double y) {
 
     spinall();
 
-    speed = previousspeed;
+    previousspeed = speed;
     previouserror = error;
 
     wait(20, msec);    
@@ -339,6 +349,11 @@ void moveto (double x, double y) {
 }
 
 double angledestination;
+
+double currentx = 0;
+double currenty = 0;
+double lastx = 0;
+double lasty = 0;
 
 void gotocoord(double x, double y){  
   /*This function just does simple moving to coordinates by rotating first, then traveling, 
@@ -351,20 +366,32 @@ void gotocoord(double x, double y){
 
   //double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
 
- double deltax = x - robotposition.robotx;
-  double deltay = y - robotposition.roboty;
+  double initialrobotdistance = robotposition.robotdistance;
+  double initialrobotangle = robotposition.robotangle;
+
+  currentx = deltahyp * sin(robotposition.robotangle) + lastx;
+  currenty = deltahyp * cos(robotposition.robotangle) + lasty;
+
+ double deltax = x - currentx;
+  double deltay = y - currenty;
 
  // double angledestination = ((atan2(deltax, deltay)) - fmod(robotposition.robotangle, 360));
 
- if (deltay < 0) {
-   angledestination = ((atan2(deltay, deltax)));
- } else {
+
    angledestination = ((atan2(deltax, deltay)));
- }
+ 
 
   turnto(degree((angledestination)));
+  lastx = currentx;
+  lasty = currenty;
+  deltaheading = robotposition.robotangle - deltaheading;
+ // std::cout <<"test x"  << std::end;
 
-  moveto(x, y);
+  printf("test currentx %f\n", currentx);
+  moveto(x);
+  //deltahyp = robotposition.robotdistance - initialhyp;
+  dtheta = robotposition.robotangle - initialrobotangle;
+  deltahyp = robotposition.robotdistance - initialrobotdistance;
 }
 
 
@@ -384,15 +411,35 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   ///*
+
+ /*clamp.set(true);
+ tilter.set(true);
+
   task mytask = task(printinfo);
+moveto(-24);
+tilter.set(false);
+chain.setVelocity(100, percent);
+chain.spin(forward);
+moveto(48);
+turnto(90);*/
+
+/*moveto(56);
+clamp.set(false);
+turnto(120);
+moveto(30);
+shared = -49;
+sharedmoving = true;
+*/
+
+  
   
   setall(100, percent);
   spinall();
   clamp.set(true);
   
   while (true) {
-    if (LimitSwitchC.pressing() == true || ultrasonic.distance(mm) >= 1300) {
-      kill();
+    if (LimitSwitchC.pressing() == true || ultrasonic.distance(mm) >= 1280) {
+      setcoast();
       clamp.set(false);
       break;
     }
@@ -408,7 +455,7 @@ void autonomous(void) {
   spinall();
 
   while (true) {
-    if (leftposition() - initialleft >= 27) {
+    if (leftposition() - initialleft >= 29) {
       setcoast();
       break;
       return;
@@ -427,7 +474,7 @@ void autonomous(void) {
   spinall();
 
   while (true) {
-    if (initialleft - leftposition() >= 10) {
+    if (initialleft - leftposition() >= 2) {
       setcoast();
       tilter.set(false);
       break;
@@ -435,7 +482,9 @@ void autonomous(void) {
     }
     wait(20, msec);
   }
-  //*/
+  //
+  arm.spinFor(forward, 300, degrees);
+
   setall(100, percent);
 
   backleft.spinFor(forward, 400, degrees, false);
@@ -463,7 +512,6 @@ void autonomous(void) {
   }  
   //*/
 }
-
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -480,9 +528,6 @@ int leftspeed = 0;
 int rightspeed = 0;
 double switchfactor = 1;
 double reductionfactor = 1;
-
-int shared = 0;
-bool sharedmoving = false;
 
 bool armmoving = false;
 
@@ -564,8 +609,10 @@ void usercontrol(void) {
     if (Controller1.ButtonX.pressing() && !clamppressed) {
       clamp.set(!clamp.value());
       clamppressed = true;
+      Controller1.Screen.print("Clamp Closed");
     } else if (!Controller1.ButtonX.pressing()) {
       clamppressed = false;
+      Controller1.Screen.print("Clamp Open");
     }
 
     if (Controller1.ButtonA.pressing() && !tilterpressed) {

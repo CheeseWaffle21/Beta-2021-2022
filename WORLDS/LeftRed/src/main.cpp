@@ -376,14 +376,19 @@ void autonomous(void) {
   // ..........................................................................
   task mytask = task(printinfo);
 
+  
+
+
+/*
   clamp.set(true);
   tilter.set(true);
 
-movetofast(40, 1220, 0);
-clamp.set(false);
-turnto(180);
-movetofast(40, 890 , 1);
-turnto()
+  movetofast(40, 1220, 0);
+  clamp.set(false);
+  turnto(180);
+  movetofast(40, 890 , 1);
+  turnto()
+  */
 
 /*clamp.set(true);
 tilter.set(true);
@@ -409,11 +414,11 @@ tilter.set(true);
  wait(1, seconds);
  turnto(350);
  
-*/
 
- /*gotocoord(48, 48);
- turnto(0);*/
- setcoast();
+
+ gotocoord(48, 48);
+ turnto(0);
+ setcoast();*/
 
 
  
