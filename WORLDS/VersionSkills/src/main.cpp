@@ -237,7 +237,7 @@ int printinfo () {
 
     Brain.Screen.setCursor(rownumber, colnumber);
     rownumber ++;
-    Brain.Screen.print("Inertial: %f", inertia.rotation());
+    Brain.Screen.print("Inertial: %f", inertia.rotation(degrees));
 
       printf("test currentx %f\n", robotposition.robotx);
 
@@ -331,8 +331,8 @@ void moveto (double dist) {
       speed = previousspeed + accelerator;
     }
 
-    setallleft(speed, percent);
-    setallright(speed, percent);
+    setallleft(1.5*speed, percent);
+    setallright(1.5*speed, percent);
 
     spinall();
 
@@ -367,7 +367,7 @@ void gotocoord(double x, double y){
   //double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
 
   double initialrobotdistance = robotposition.robotdistance;
-  double initialrobotangle = robotposition.robotangle;
+  double initialrobotangle = radian(inertia.rotation(degrees));
 
  // currentx = deltahyp * sin(robotposition.robotangle) + lastx;
  // currenty = deltahyp * cos(robotposition.robotangle) + lasty;
@@ -387,13 +387,13 @@ void gotocoord(double x, double y){
   
   Les said to put lastx and y here for better accuracy*/
 
-  printf("test currentx %f\n", totalx);
+  //printf("test currentx %f\n", totalx);
   moveto(sqrt((deltax*deltax) + (deltay*deltay)));
 
 
   deltahyp = robotposition.robotdistance - initialrobotdistance;
-  double deltaxreal = deltahyp*sin(robotposition.robotangle); //actual change in x after rotation and translation
-  double deltayreal = deltahyp*cos(robotposition.robotangle);
+  double deltaxreal = deltahyp*sin(radian(inertia.rotation(degrees))); //actual change in x after rotation and translation
+  double deltayreal = deltahyp*cos(radian(inertia.rotation(degrees)));
 
   totalx = deltaxreal + lastx;
   totaly = deltayreal + lasty;
@@ -425,6 +425,10 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   ///*
+  task mytask = task(printinfo);
+  gotocoord(15,15);
+  wait(1, sec);
+  gotocoord(0,0);
 
  /*clamp.set(true);
  tilter.set(true);
@@ -447,7 +451,7 @@ sharedmoving = true;
 
   
   
- setall(100, percent);
+ /*setall(100, percent);
   spinall();
   clamp.set(true);
   

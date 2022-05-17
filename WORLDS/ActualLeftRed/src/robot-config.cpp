@@ -9,10 +9,10 @@ brain  Brain;
 
 // VEXcode device constructors
 triport expander = triport(PORT11);
-motor frontleft = motor(PORT8, ratio6_1, false);
+motor frontleft = motor(PORT7, ratio6_1, false);
 motor backleft = motor(PORT6, ratio6_1, false);
 motor backright = motor(PORT10, ratio6_1, true);
-motor frontright = motor(PORT7, ratio6_1, true);
+motor frontright = motor(PORT8, ratio6_1, true);
 controller Controller1 = controller(primary);
 motor boostright = motor(PORT14, ratio6_1, true);
 motor boostleft = motor(PORT13, ratio6_1, false);

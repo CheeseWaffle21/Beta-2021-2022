@@ -1,6 +1,69 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// frontleft            motor         7               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// inertia              inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// chain                motor         18              
+// LimitSwitchC         limit         C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         5               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         8               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// inertia              inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// chain                motor         18              
+// LimitSwitchC         limit         C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontleft            motor         5               
+// backleft             motor         6               
+// backright            motor         10              
+// frontright           motor         7               
+// Controller1          controller                    
+// boostright           motor         14              
+// boostleft            motor         13              
+// clamp                digital_out   C               
+// inertia              inertial      17              
+// righttracker         encoder       A, B            
+// lefttracker          encoder       G, H            
+// arm                  motor         16              
+// expander             triport       11              
+// tilter               digital_out   D               
+// ultrasonic           sonar         A, B            
+// chain                motor         18              
+// LimitSwitchC         limit         C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // frontleft            motor         8               
 // backleft             motor         6               
 // backright            motor         10              
@@ -107,7 +170,7 @@
 #include "math.h"
 #include <cmath>
 #include <algorithm>
-#include <iostream>;
+#include <iostream>
 
 
 double pi = 3.14159;
@@ -341,9 +404,9 @@ void turnto (int target) {
 
     speed = error * kp + totalerror * ki;
 
-    if (speed - previousspeed > accelerator) {
+   /* if (speed - previousspeed > accelerator) {
       speed = previousspeed + accelerator;
-    }
+    }*/
 
     setallleft(speed, percent);
     setallright(-speed, percent);
@@ -419,15 +482,9 @@ double lastx = 0;
 double lasty = 0;
 
 void gotocoord(double x, double y){  
-  /*This function just does simple moving to coordinates by rotating first, then traveling, 
-  without rotating back to the original orientation.
-
-  This is subject to develop to account for curves, PID, any other fancy thing
-  
-  Heading angle used here is based off of encoders only, though in loose undeveloped theory, 
-  the inertial sensor can be used as well since its angle is just half of the arc angle thing*/
-
-  //double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
+  /*THIS FUNCTION IS WRONG; DO NOT USE
+  More fixed version maybe found in the VersionSkills folder
+*/
 
   double initialrobotdistance = robotposition.robotdistance;
   double initialrobotangle = robotposition.robotangle;
@@ -457,6 +514,12 @@ void gotocoord(double x, double y){
   deltahyp = robotposition.robotdistance - initialrobotdistance;
 }
 
+int chainactivation () {
+  wait(12, seconds);
+  chain.setVelocity(100, percent);
+  chain.spin(forward);
+  return 0;
+}
 
 
 /*---------------------------------------------------------------------------*/
@@ -496,7 +559,7 @@ sharedmoving = true;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-setall(100, percent);
+/*setall(100, percent);
 spinall();
 clamp.set(true);
 
@@ -563,20 +626,25 @@ chain.spin(forward);
 
 
 
-  
+  */
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*  setall(100, percent);
+  task printer = task(printinfo);
+  task mover = task(chainactivation);
+  setall(100, percent);
   spinall();
   clamp.set(true);
   
+  //Grab goal
   while (true) {
     if (LimitSwitchC.pressing() == true || ultrasonic.distance(mm) >= 1280) {
       setcoast();
-      clamp.set(false);
+      clamp.set(false); 
       break;
     }
    wait (20, msec);
   }
+
+  wait(200, msec);
 
   turnto(180);
 
@@ -587,7 +655,7 @@ chain.spin(forward);
   spinall();
 
   while (true) {
-    if (leftposition() - initialleft >= 29) {
+    if (leftposition() - initialleft >= 36.5) {
       setcoast();
       break;
       return;
@@ -599,35 +667,35 @@ chain.spin(forward);
   turnto(-90);
   
   setall(-80, percent);
-  spinall();
+
   
-  initialleft = leftposition();
 
   spinall();
+  wait(1, seconds);
 
-  while (true) {
-    if (initialleft - leftposition() >= 2) {
-      setcoast();
-      tilter.set(false);
-      break;
-      return;
-    }
+
+  kill();
+  tilter.set(false);
+
+    
     wait(20, msec);
-  }
+  
+
+  wait(200, msec);
   //
-  arm.spinFor(forward, 300, degrees);
+  arm.spinFor(reverse, 300/4, degrees);
 
   setall(100, percent);
 
-  backleft.spinFor(forward, 400, degrees, false);
-  backright.spinFor(forward, 400, degrees, false);
-  frontleft.spinFor(reverse, 400, degrees, false);
-  frontright.spinFor(reverse, 400, degrees, false);
+  backleft.spinFor(forward, 600, degrees, false);
+  backright.spinFor(forward, 600, degrees, false);
+  frontleft.spinFor(reverse, 600, degrees, false);
+  frontright.spinFor(reverse, 600, degrees, false);
   ///*
   chain.setVelocity(100, percent);
   chain.spin(forward);
   
-  turnto(0);  
+  turnto(0);
 
   initialleft = leftposition();
   setall(80, percent);
@@ -641,8 +709,8 @@ chain.spin(forward);
     }
     wait(20, msec);
     
-  }  
-  */
+  }   
+  
 }
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
