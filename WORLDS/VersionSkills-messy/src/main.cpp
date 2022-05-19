@@ -265,7 +265,7 @@ void turnto (int target, int speed) {
 
 
  //error = (degree(target) - lround(fmod(degree((0 + radian(inertia.rotation())) / 1), 360)) + 540) % 360 - 180;
- error = (target - (fmod(inertia.rotation(), 360)));
+ error = (target - (fmod(inertia.rotation(degrees), 360)));
  setallleft(speed, percent);
   setallright(-speed, percent);
 
@@ -275,7 +275,7 @@ void turnto (int target, int speed) {
  
      spinall();
 
-  if ((fmod(inertia.rotation(), 360)) >= error) {
+  if ((fmod(inertia.rotation(degrees), 360)) >= error) {
     kill();
     break;
     return;
