@@ -156,6 +156,17 @@ struct robotpositions {
 };
 robotpositions robotposition;
 
+double angledestination;
+
+double totalx = 0;
+double totaly = 0;
+double lastx = 0;
+double lasty = 0;
+double deltaheading = 0;
+double dtheta = 0;
+double deltahyp = 0;
+double initialrobotdistance = 0;
+
 //Tasks for autonomous
 
 double radian (double number) {
@@ -183,17 +194,18 @@ robotpositions getlocation () {
   double rightvalue = rightposition();
   double leftvalue = leftposition();
   double radius = ( ( rightvalue * trackingDistanceLeft ) + ( leftvalue * trackingDistanceRight ) ) / ( leftvalue - rightvalue );
-  double hypotenuse = sqrt( pow(radius, 2) + pow(radius, 2) - ( 2 * radius * radius * cos(inertia.rotation()) ) );
+  double hypotenuse = sqrt( pow(radius, 2) + pow(radius, 2) - ( 2 * radius * radius * cos(radian(inertia.rotation(degrees))) ) );
+  double hypotenuse2 = (rightvalue + leftvalue) / 2;
   
   //double x = hypotenuse * ( cos( (pi - headingangle) / 2) );
   //double y = hypotenuse * ( sin( (pi - headingangle) / 2) );
   
-  double x = hypotenuse * sin(headingangle);
-  double y = hypotenuse * cos(headingangle);
+  double xe = hypotenuse * sin(headingangle);
+  double ye = hypotenuse * cos(headingangle);
 
-  robotposition.robotx = x;
-  robotposition.roboty = y;
-  robotposition.robotdistance = hypotenuse;
+  robotposition.robotx = xe;
+  robotposition.roboty = ye;
+  robotposition.robotdistance = hypotenuse2;
   robotposition.robotangle = headingangle;
 
   return robotposition;
@@ -264,8 +276,8 @@ void turnto (int target, int speed) {
  
 
 
- //error = (degree(target) - lround(fmod(degree((0 + radian(inertia.rotation())) / 1), 360)) + 540) % 360 - 180;
- error = (target - (fmod(inertia.rotation(degrees), 360)));
+ error = ((target) - lround(fmod(degree((0 + radian(inertia.rotation())) / 1), 360)) + 540) % 360 - 180;
+ error = (lround((fmod(target, 360)) + 540) % 360 - 180);
  setallleft(speed, percent);
   setallright(-speed, percent);
 
@@ -274,12 +286,20 @@ void turnto (int target, int speed) {
   
  
      spinall();
-
-  if ((fmod(inertia.rotation(degrees), 360)) >= error) {
+    
+if (target >= 0) {
+  if ((lround((fmod(inertia.rotation(degrees), 360)) + 540) % 360 - 180) >= error) {
     kill();
     break;
     return;
   }
+} else if (target >= 0) {
+   if ((lround((fmod(inertia.rotation(degrees), 360)) + 540) % 360 - 180) <= error) {
+    kill();
+    break;
+    return;
+  }
+}
     
 /*
     if (fabs(error) < threshold) {
@@ -363,15 +383,6 @@ void moveto (double dist) {
   return;
 }
 
-double angledestination;
-
-double totalx = 0;
-double totaly = 0;
-double lastx = 0;
-double lasty = 0;
-double deltaheading = 0;
-double dtheta = 0;
-double deltahyp = 0;
 
 void gotocoord(double x, double y){  
   /*This function just does simple moving to coordinates by rotating first, then traveling, 
@@ -384,8 +395,8 @@ void gotocoord(double x, double y){
 
   //double angledestination = ((atan(dispy/dispx))) + robotposition.robotangle; //If inertial sensor is used, omit the '2*' in the beginning.
 
-  double initialrobotdistance = robotposition.robotdistance;
-  double initialrobotangle = radian(inertia.rotation(degrees));
+  initialrobotdistance = robotposition.robotdistance;
+  
 
  // currentx = deltahyp * sin(robotposition.robotangle) + lastx;
  // currenty = deltahyp * cos(robotposition.robotangle) + lasty;
@@ -401,8 +412,11 @@ void gotocoord(double x, double y){
 
 //turnhere
 
-
-  turnto(degree((angledestination)), 20);
+if (angledestination >= 0){
+  turnto(degree((angledestination)), 5);
+} else if (angledestination <= 0) {
+  turnto(degree((angledestination)), -5);
+}
  /* lastx = currentx;
   lasty = currenty; 
   
@@ -420,8 +434,8 @@ void gotocoord(double x, double y){
   totaly = deltayreal + lasty;
 
   //deltahyp = robotposition.robotdistance - initialhyp;
-  dtheta = robotposition.robotangle - initialrobotangle;
-  deltahyp = robotposition.robotdistance - initialrobotdistance;
+  //dtheta = robotposition.robotangle - initialrobotangle;
+  //deltahyp = robotposition.robotdistance - initialrobotdistance;
 
   lastx = totalx;
   lasty = totaly;
@@ -447,9 +461,12 @@ void autonomous(void) {
   // ..........................................................................
   ///*
   task mytask = task(printinfo);
-  gotocoord(15,15);
-  wait(2, sec);
-  gotocoord(30,15);
+  gotocoord(20,20);
+  wait(1, sec);
+  gotocoord(0,40);
+  //wait(1, sec);
+  //gotocoord(48,0);
+  //gotocoord(0,0);
 
  /*clamp.set(true);
  tilter.set(true);
