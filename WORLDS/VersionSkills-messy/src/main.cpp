@@ -276,7 +276,7 @@ void turnto (int target, int speed) {
  
 
 
- error = ((target) - lround(fmod(degree((0 + radian(inertia.rotation())) / 1), 360)) + 540) % 360 - 180;
+ //error = ((target) - lround(fmod(degree((0 + radian(inertia.rotation())) / 1), 360)) + 540) % 360 - 180;
  error = (lround((fmod(target, 360)) + 540) % 360 - 180);
  setallleft(speed, percent);
   setallright(-speed, percent);
@@ -293,7 +293,7 @@ if (target >= 0) {
     break;
     return;
   }
-} else if (target >= 0) {
+} else if (target <= 0) {
    if ((lround((fmod(inertia.rotation(degrees), 360)) + 540) % 360 - 180) <= error) {
     kill();
     break;
@@ -461,9 +461,16 @@ void autonomous(void) {
   // ..........................................................................
   ///*
   task mytask = task(printinfo);
-  gotocoord(20,20);
+  gotocoord(72, 48);
   wait(1, sec);
-  gotocoord(0,40);
+  gotocoord(48,24);
+  wait(1, sec);
+  gotocoord(72,72);
+  wait(1, sec);
+  gotocoord(96,24);
+  wait(1, sec);
+  gotocoord(0,144);
+
   //wait(1, sec);
   //gotocoord(48,0);
   //gotocoord(0,0);
